@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 4) {
-        printf("usage: ./addcontent <address> <port> <value>");
+        printf("usage: ./addcontent <address> <port> <value>\n");
         exit(1);
     }
 

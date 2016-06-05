@@ -16,7 +16,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 4) {
-        printf("usage: ./lookupcontent <address> <port> <key>");
+        printf("usage: ./lookupcontent <address> <port> <key>\n");
         exit(1);
     }
 

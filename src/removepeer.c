@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        printf("usage: ./removepeer <address> <port>");
+        printf("usage: ./removepeer <address> <port>\n");
         exit(1);
     }
 

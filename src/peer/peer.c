@@ -15,7 +15,8 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {
-        printf("usage: ./peer <address> <port>");
+        printf("usage: ./peer <address> <port>\n");
+        printf("%d %s %s", argc, argv[0], argv[1]);
         exit(1);
     }
 
