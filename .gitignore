@@ -1,0 +1,7 @@
+*.o
+
+addcontent
+addpeer
+lookupcontent
+removecontent
+removepeer
