@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-    if (argc != 0 && argc != 2) {
+    if (argc != 1 && argc != 3) {
         printf("usage: ./addpeer [<address> <port>]");
         exit(1);
     }

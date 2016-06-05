@@ -5,24 +5,17 @@ CC_FLAGS := -g -Wall -Wextra -Wpedantic -Werror -Wstrict-overflow -fno-strict-al
 	${CC} $(CC_FLAGS) -c $<
 
 
-all: addcontent addpeer lookupcontent removecontent removepeer
-	make -C peer
+all: peer
 
-addcontent: addcontent.o
-addpeer: addpeer.o
-lookupcontent: lookupcontent.o
-removecontent: removecontent.o
-removepeer: removepeer.o
+peer: peer.o
+
+peer.o: peer.c# mybind.c
 
 style:
-	make -C peer style
-
 	clang-format -style="{BasedOnStyle: llvm, IndentWidth: 4, AllowShortFunctionsOnASingleLine: None, KeepEmptyLinesAtTheStartOfBlocks: false}" -i *.c
 	clang-format -style="{BasedOnStyle: llvm, IndentWidth: 4, AllowShortFunctionsOnASingleLine: None, KeepEmptyLinesAtTheStartOfBlocks: false}" -i *.h
 
 
 clean:
-	make -C peer clean
-
 	rm -f *.o
-	rm -f addcontent addpeer lookupcontent removecontent removepeer
+	rm -f peer

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
+    if (argc != 4) {
         printf("usage: ./removecontent <address> <port> <key>");
         exit(1);
     }
