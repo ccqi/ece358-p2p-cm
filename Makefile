@@ -14,12 +14,12 @@ build/%.o: src/*/%.c
 BINARIES := addcontent addpeer lookupcontent peer removecontent removepeer
 all: $(BINARIES)
 
-addcontent: build/addcontent.o
+addcontent: build/addcontent.o build/socket.o
 addpeer: build/addpeer.o
 lookupcontent: build/lookupcontent.o build/socket.o
 peer: build/peer.o build/address.o build/socket.o
-removecontent: build/removecontent.o
-removepeer: build/removepeer.o
+removecontent: build/removecontent.o build/socket.o
+removepeer: build/removepeer.o build/socket.o
 
 
 style:

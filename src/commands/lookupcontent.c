@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../shared/socket.h"
 
@@ -13,10 +14,14 @@ int main(int argc, char *argv[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, argv[1], argv[2]);
 
-    send_command(sockfd, "hello");
+    char command[strlen("lookup:") + sizeof(argv[3]) + 1];
+    sprintf(command, "lookup:%s", argv[3]);
+    send_command(sockfd, command);
 
     char buf[SOCKET_TRANSFER_LIMIT];
     receive_response(sockfd, buf);
+
+    printf("%s", buf);
 
     disconnect_from_server(sockfd);
 

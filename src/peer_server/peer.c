@@ -74,9 +74,15 @@ int main(int argc, char *argv[]) {
             char buf[SOCKET_TRANSFER_LIMIT];
             receive_response(connectedsock, buf);
 
+            // TODO: Error cases
+            // TODO: responding to things and stuff
             // buf == "command:data" or something
             // do the things with the stuff
             // if strncmp(buf, "newpeer", 7) { /* add new peer to system */ }
+            // insert:KEY -> insert content with value VALUE
+            // lookup:KEY -> return content with key KEY
+            // delete:KEY -> delete content with key KEY
+            // remove -> remove this peer
             printf("Child %d received the following %lu-length string: %s\n",
                    getpid(), sizeof(buf), buf);
 
