@@ -1,5 +1,4 @@
 #include <arpa/inet.h>
-#include <errno.h>
 #include <ifaddrs.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
@@ -12,7 +11,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#define SOCKET_TRANSFER_LIMIT 16
+#include "../shared/socket.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 1 && argc != 3) {
@@ -50,25 +49,9 @@ int main(int argc, char *argv[]) {
     inet_aton(ip, (struct in_addr *)&server.sin_addr.s_addr);
     server.sin_port = 0;
 
-    // --- bind to socket
     int8_t sockfd = -1;
-    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("could not open socket");
-        exit(1);
-    }
-
-    if (bind(sockfd, (struct sockaddr *)&server, sizeof(struct sockaddr)) < 0) {
-        perror("could not bind to socket");
-        exit(1);
-    }
-
-    socklen_t alen = sizeof(struct sockaddr_in);
-    if (getsockname(sockfd, (struct sockaddr *)&server, &alen) < 0) {
-        perror("could not get socket name");
-        exit(1);
-    }
-    // ---
-
+    socklen_t alen = 0;
+    create_server(&sockfd, &server, &alen);
     printf("%s %d\n", ip, server.sin_port);
 
     if (argc == 3) {
