@@ -79,8 +79,11 @@ void send_command(int8_t sockfd, char *command) {
 }
 
 void receive_response(int8_t sockfd, char *response) {
-    if (recv(sockfd, response, SOCKET_TRANSFER_LIMIT - 1, 0) < 0) {
+    ssize_t recvlen;
+    if ((recvlen = recv(sockfd, response, SOCKET_TRANSFER_LIMIT - 1, 0)) < 0) {
         perror("error receiving response from server");
         exit(1);
     }
+
+    response[recvlen] = 0;
 }

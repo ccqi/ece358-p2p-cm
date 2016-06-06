@@ -32,8 +32,15 @@ int main(int argc, char *argv[]) {
     printf("%s %d\n", ip, server.sin_port);
 
     if (argc == 3) {
-        printf("Gonna send to %s %s\n", argv[1], argv[2]);
-        // TODO
+        int8_t peer_sockfd = -1;
+        connect_to_server(&peer_sockfd, argv[1], argv[2]);
+
+        send_command(peer_sockfd, "newpeer");  // TODO: include this peer's data
+
+        char buf[SOCKET_TRANSFER_LIMIT];
+        receive_response(peer_sockfd, buf);  // TODO: receives peer list
+
+        disconnect_from_server(peer_sockfd);
     }
 
     for (;;) {
@@ -64,31 +71,19 @@ int main(int argc, char *argv[]) {
                 perror("error closing socket as child");
             }
 
-            size_t buflen = SOCKET_TRANSFER_LIMIT;
-            char buf[buflen];
-            ssize_t recvlen;
-            if ((recvlen = recv(connectedsock, buf, buflen - 1, 0)) < 0) {
-                perror("could not receive on socket");
-                exit(1);
-            }
+            char buf[SOCKET_TRANSFER_LIMIT];
+            receive_response(connectedsock, buf);
 
-            buf[recvlen] = 0;
+            // buf == "command:data" or something
             // do the things with the stuff
-            printf("Child %d received the following %d-length string: %s\n",
-                   getpid(), (int)recvlen, buf);
+            // if strncmp(buf, "newpeer", 7) { /* add new peer to system */ }
+            printf("Child %d received the following %lu-length string: %s\n",
+                   getpid(), sizeof(buf), buf);
 
-            // respond:
-            strcpy(buf, "bye");
-            printf("Child %d sending %s\n", getpid(), buf);
-            if (send(connectedsock, buf, strlen(buf), 0) < 0) {
-                perror("send");
-                return -1;
-            }
+            // respond
+            send_command(connectedsock, "response");
 
-            if (shutdown(connectedsock, SHUT_RDWR) < 0) {
-                perror("could not shutdown client connection");
-                exit(1);
-            }
+            disconnect_from_server(connectedsock);
 
             return 0;
         }
