@@ -3,7 +3,6 @@
 addcontent
 addpeer
 lookupcontent
+peer
 removecontent
 removepeer
-
-src/peer/peer

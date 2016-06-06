@@ -14,10 +14,9 @@ int main(int argc, char *argv[]) {
     }
 
     if (!fork()) {
-        char **args = argv;
-        args[0] = "peer";
+        argv[0] = "peer";
 
-        if (execve("peer/peer", args, NULL) != 0) {
+        if (execve("peer", argv, NULL) != 0) {
             printf("error running peer");
             exit(1);
         }
