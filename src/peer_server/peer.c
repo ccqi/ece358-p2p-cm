@@ -3,7 +3,6 @@
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +10,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "../shared/address.h"
 #include "../shared/socket.h"
 
 int main(int argc, char *argv[]) {
@@ -19,30 +19,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    // --- Select IP
-    char *ip = 0;
-
-    struct ifaddrs *ifa;
-    if (getifaddrs(&ifa) < 0) {
-        perror("could not get host addresses");
-        exit(1);
-    }
-
-    struct in_addr srv_ip;
-    for (struct ifaddrs *i = ifa; i != NULL; i = i->ifa_next) {
-        if (i->ifa_addr == NULL) {
-            continue;
-        }
-
-        if (i->ifa_addr->sa_family == AF_INET) {
-            memcpy(&srv_ip, &(((struct sockaddr_in *)(i->ifa_addr))->sin_addr), sizeof(struct in_addr));
-            ip = inet_ntoa(srv_ip);
-            break;
-        }
-    }
-
-    freeifaddrs(ifa);
-    // ---
+    char *ip = select_ip();
 
     struct sockaddr_in server;
     server.sin_family = AF_INET;
