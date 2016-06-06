@@ -45,7 +45,8 @@ int main(int argc, char *argv[]) {
         uint8_t connectedsock;
         struct sockaddr_in client;
         alen = sizeof(struct sockaddr_in);
-        if ((connectedsock = accept(sockfd, (struct sockaddr *)&client, &alen)) < 0) {
+        if ((connectedsock =
+                 accept(sockfd, (struct sockaddr *)&client, &alen)) < 0) {
             perror("could not accept connection");
             exit(1);
         }
@@ -73,7 +74,8 @@ int main(int argc, char *argv[]) {
 
             buf[recvlen] = 0;
             // do the things with the stuff
-            printf("Child %d received the following %d-length string: %s\n", getpid(), (int)recvlen, buf);
+            printf("Child %d received the following %d-length string: %s\n",
+                   getpid(), (int)recvlen, buf);
 
             // respond:
             strcpy(buf, "bye");

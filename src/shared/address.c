@@ -22,7 +22,8 @@ char *select_ip() {
         }
 
         if (i->ifa_addr->sa_family == AF_INET) {
-            memcpy(&srv_ip, &(((struct sockaddr_in *)(i->ifa_addr))->sin_addr), sizeof(struct in_addr));
+            memcpy(&srv_ip, &(((struct sockaddr_in *)(i->ifa_addr))->sin_addr),
+                   sizeof(struct in_addr));
             ip = inet_ntoa(srv_ip);
             break;
         }

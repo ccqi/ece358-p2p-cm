@@ -16,7 +16,7 @@ all: $(BINARIES)
 
 addcontent: build/addcontent.o
 addpeer: build/addpeer.o
-lookupcontent: build/lookupcontent.o
+lookupcontent: build/lookupcontent.o build/socket.o
 peer: build/peer.o build/address.o build/socket.o
 removecontent: build/removecontent.o
 removepeer: build/removepeer.o
