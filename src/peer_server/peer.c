@@ -35,7 +35,9 @@ int main(int argc, char *argv[]) {
         int8_t peer_sockfd = -1;
         connect_to_server(&peer_sockfd, argv[1], argv[2]);
 
-        send_command(peer_sockfd, "newpeer");  // TODO: include this peer's data
+        char command[strlen("newpeer:") + sizeof(ip) + 1 + sizeof(server.sin_port) + 1];
+        sprintf(command, "newpeer:%s:%d", ip, server.sin_port);
+        send_command(peer_sockfd, command);
 
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_response(peer_sockfd, buf);  // TODO: receives peer list
@@ -74,17 +76,38 @@ int main(int argc, char *argv[]) {
             char buf[SOCKET_TRANSFER_LIMIT];
             receive_response(connectedsock, buf);
 
+            char *command = strtok(buf, ":");
+            if (strcmp(command, "insert") == 0) {
+                // insert content with value, respond with key
+                char *value = strtok(NULL, ":");
+                (void)value;
+            } else if (strcmp(command, "lookup") == 0) {
+                char *key = strtok(NULL, ":");
+                (void)key;
+                // lookup content with key, respond with value
+            } else if (strcmp(buf, "delete") == 0) {
+                char *key = strtok(NULL, ":");
+                (void)key;
+                // remove content with key
+            } else if (strcmp(buf, "remove") == 0) {
+                // remove self from network
+            } else if (strcmp(buf, "newpeer") == 0) {
+                char *ip = strtok(NULL, ":");
+                char *port = strtok(NULL, ":");
+                (void)ip;
+                (void)port;
+                // add peer with ip and port to network
+            } else if (strcmp(buf, "removepeer") == 0) {
+                char *ip = strtok(NULL, ":");
+                char *port = strtok(NULL, ":");
+                (void)ip;
+                (void)port;
+                // remove peer with ip and port to network
+            } else {
+                // TODO: some sort of error
+            }
+
             // TODO: Error cases
-            // TODO: responding to things and stuff
-            // buf == "command:data" or something
-            // do the things with the stuff
-            // if strncmp(buf, "newpeer", 7) { /* add new peer to system */ }
-            // insert:KEY -> insert content with value VALUE
-            // lookup:KEY -> return content with key KEY
-            // delete:KEY -> delete content with key KEY
-            // remove -> remove this peer
-            printf("Child %d received the following %lu-length string: %s\n",
-                   getpid(), sizeof(buf), buf);
 
             // respond
             send_command(connectedsock, "response");
