@@ -1,5 +1,6 @@
 #include <arpa/inet.h>
 #include <errno.h>
+#include <ifaddrs.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
@@ -14,23 +15,47 @@
 #define SOCKET_TRANSFER_LIMIT 16
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        printf("usage: ./peer <address> <port>\n");
-        printf("%d %s %s", argc, argv[0], argv[1]);
+    if (argc != 1 && argc != 3) {
+        printf("usage: ./peer [<address> <port>]\n");
         exit(1);
     }
 
+    // --- Select IP
+    char *ip = 0;
+
+    struct ifaddrs *ifa;
+    if (getifaddrs(&ifa) < 0) {
+        perror("could not get host addresses");
+        exit(1);
+    }
+
+    struct in_addr srv_ip;
+    for (struct ifaddrs *i = ifa; i != NULL; i = i->ifa_next) {
+        if (i->ifa_addr == NULL) {
+            continue;
+        }
+
+        if (i->ifa_addr->sa_family == AF_INET) {
+            memcpy(&srv_ip, &(((struct sockaddr_in *)(i->ifa_addr))->sin_addr), sizeof(struct in_addr));
+            ip = inet_ntoa(srv_ip);
+            break;
+        }
+    }
+
+    freeifaddrs(ifa);
+    // ---
+
+    struct sockaddr_in server;
+    server.sin_family = AF_INET;
+    inet_aton(ip, (struct in_addr *)&server.sin_addr.s_addr);
+    server.sin_port = 0;
+
+    // --- bind to socket
     int8_t sockfd = -1;
     if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("could not open socket");
         exit(1);
     }
-
-    struct sockaddr_in server;
-    server.sin_family = AF_INET;
-    inet_aton((char *)argv[1], (struct in_addr *)&server.sin_addr.s_addr);
-    server.sin_port = htons(atoi(argv[2]));
-    printf("Binding on %d\n", server.sin_port);
 
     if (bind(sockfd, (struct sockaddr *)&server, sizeof(struct sockaddr)) < 0) {
         perror("could not bind to socket");
@@ -41,6 +66,14 @@ int main(int argc, char *argv[]) {
     if (getsockname(sockfd, (struct sockaddr *)&server, &alen) < 0) {
         perror("could not get socket name");
         exit(1);
+    }
+    // ---
+
+    printf("%s %d\n", ip, server.sin_port);
+
+    if (argc == 3) {
+        printf("Gonna send to %s %s\n", argv[1], argv[2]);
+        // TODO
     }
 
     for (;;) {
