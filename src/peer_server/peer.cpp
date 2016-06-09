@@ -14,6 +14,8 @@
 #include "../shared/address.h"
 #include "../shared/socket.h"
 
+#include "content.h"
+
 void join(char *ip, uint8_t port, char *args[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, args[1], args[2]);
@@ -70,60 +72,50 @@ int main(int argc, char *argv[]) {
         }
 
         if (fork()) {
-            // parent
             if (close(connectedsock) < 0) {
-                perror("error closing socket as server");
+                perror("error closing socket as parent");
             }
 
             continue;
-        } else {
-            // child
-            if (close(sockfd) < 0) {
-                perror("error closing socket as child");
-            }
-
-            char buf[SOCKET_TRANSFER_LIMIT];
-            receive_response(connectedsock, buf);
-
-            char *command = strtok(buf, ":");
-            if (strcmp(command, "insert") == 0) {
-                // insert content with value, respond with key
-                char *value = strtok(NULL, ":");
-                (void)value;
-            } else if (strcmp(command, "lookup") == 0) {
-                char *key = strtok(NULL, ":");
-                (void)key;
-                // lookup content with key, respond with value
-            } else if (strcmp(buf, "delete") == 0) {
-                char *key = strtok(NULL, ":");
-                (void)key;
-                // remove content with key
-            } else if (strcmp(buf, "remove") == 0) {
-                // remove self from network
-            } else if (strcmp(buf, "newpeer") == 0) {
-                char *ip = strtok(NULL, ":");
-                char *port = strtok(NULL, ":");
-                (void)ip;
-                (void)port;
-                // add peer with ip and port to network
-            } else if (strcmp(buf, "removepeer") == 0) {
-                char *ip = strtok(NULL, ":");
-                char *port = strtok(NULL, ":");
-                (void)ip;
-                (void)port;
-                // remove peer with ip and port to network
-            } else {
-                // TODO: some sort of error
-            }
-
-            // TODO: Error cases
-
-            // respond
-            send_command(connectedsock, "response");
-
-            disconnect_from_server(connectedsock);
-
-            return 0;
         }
+
+        if (close(sockfd) < 0) {
+            perror("error closing socket as child");
+        }
+
+        char buf[SOCKET_TRANSFER_LIMIT];
+        receive_response(connectedsock, buf);
+
+        char *command = strtok(buf, ":");
+        if (strcmp(command, "insert") == 0) {
+            char *key = insert_content(strtok(NULL, ":"));
+            send_command(connectedsock, key);
+        } else if (strcmp(command, "lookup") == 0) {
+            char *value = read_content(strtok(NULL, ":"));
+            send_command(connectedsock, value);
+        } else if (strcmp(buf, "delete") == 0) {
+            delete_content(strtok(NULL, ":"));
+        } else if (strcmp(buf, "remove") == 0) {
+            // remove self from network
+        } else if (strcmp(buf, "newpeer") == 0) {
+            char *ip = strtok(NULL, ":");
+            char *port = strtok(NULL, ":");
+            (void)ip;
+            (void)port;
+            // add peer with ip and port to network
+        } else if (strcmp(buf, "removepeer") == 0) {
+            char *ip = strtok(NULL, ":");
+            char *port = strtok(NULL, ":");
+            (void)ip;
+            (void)port;
+            // remove peer with ip and port to network
+        } else {
+            // TODO: some sort of error
+        }
+        // TODO: Error cases
+
+        disconnect_from_server(connectedsock);
+
+        return 0;
     }
 }

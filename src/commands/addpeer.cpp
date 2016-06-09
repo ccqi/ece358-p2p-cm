@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (!fork()) {
-        argv[0] = "peer";
+        argv[0] = (char *)"peer";
 
         if (execve("peer", argv, NULL) != 0) {
             printf("error running peer");
