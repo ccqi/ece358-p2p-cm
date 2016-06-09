@@ -3,6 +3,7 @@
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
+#include <sstream>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -20,9 +21,9 @@ void join(char *ip, uint8_t port, char *args[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, args[1], args[2]);
 
-    char command[strlen("newpeer:") + sizeof(ip) + 1 + sizeof(port) + 1];
-    sprintf(command, "newpeer:%s:%d", ip, port);
-    send_command(sockfd, command);
+    std::stringstream ss;
+    ss << "newpeer:" << ip << ":" << port;
+    send_command(sockfd, ss.str().c_str());
 
     char buf[SOCKET_TRANSFER_LIMIT];
     receive_response(sockfd, buf); // TODO: receives peer list

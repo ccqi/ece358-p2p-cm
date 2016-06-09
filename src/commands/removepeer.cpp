@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, argv[1], argv[2]);
 
-    send_command(sockfd, (char *)"remove");
+    send_command(sockfd, "remove");
 
     char buf[SOCKET_TRANSFER_LIMIT];
     receive_response(sockfd, buf);

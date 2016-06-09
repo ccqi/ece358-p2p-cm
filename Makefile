@@ -2,7 +2,7 @@
 CXX_FILES := $(wildcard src/*/*.cpp)
 OBJ_FILES := $(addprefix build/,$(notdir $(CXX_FILES:.cpp=.o)))
 
-CXX_FLAGS := -g -Wall -Wextra -Wpedantic -Werror -Wstrict-overflow -fno-strict-aliasing -Wno-missing-field-initializers -O2
+CXX_FLAGS := -g -Wall -Wextra -Wpedantic -Werror -Wstrict-overflow -fno-strict-aliasing -Wno-missing-field-initializers -O2 -std=c++11
 LD_FLAGS :=
 
 build/%.o: src/*/%.cpp

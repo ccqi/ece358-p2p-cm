@@ -67,7 +67,7 @@ void disconnect_from_server(uint8_t sockfd) {
     }
 }
 
-void send_command(int8_t sockfd, char *command) {
+void send_command(int8_t sockfd, const char *command) {
     char buf[SOCKET_TRANSFER_LIMIT];
     strncpy(buf, command, SOCKET_TRANSFER_LIMIT);
     buf[SOCKET_TRANSFER_LIMIT - 1] = 0;
