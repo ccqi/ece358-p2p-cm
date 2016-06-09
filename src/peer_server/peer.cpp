@@ -23,10 +23,10 @@ void join(char *ip, uint8_t port, char *args[]) {
 
     std::stringstream ss;
     ss << "newpeer:" << ip << ":" << port;
-    send_command(sockfd, ss.str().c_str());
+    send_to_socket(sockfd, ss.str().c_str());
 
     char buf[SOCKET_TRANSFER_LIMIT];
-    receive_response(sockfd, buf); // TODO: receives peer list
+    receive_from_socket(sockfd, buf); // TODO: receives peer list
 
     disconnect_from_server(sockfd);
 }
@@ -85,15 +85,15 @@ int main(int argc, char *argv[]) {
         }
 
         char buf[SOCKET_TRANSFER_LIMIT];
-        receive_response(connectedsock, buf);
+        receive_from_socket(connectedsock, buf);
 
         char *command = strtok(buf, ":");
         if (strcmp(command, "insert") == 0) {
             char *key = insert_content(strtok(NULL, ":"));
-            send_command(connectedsock, key);
+            send_to_socket(connectedsock, key);
         } else if (strcmp(command, "lookup") == 0) {
             char *value = read_content(strtok(NULL, ":"));
-            send_command(connectedsock, value);
+            send_to_socket(connectedsock, value);
         } else if (strcmp(buf, "delete") == 0) {
             delete_content(strtok(NULL, ":"));
         } else if (strcmp(buf, "remove") == 0) {

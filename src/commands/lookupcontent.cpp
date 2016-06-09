@@ -16,10 +16,10 @@ int main(int argc, char *argv[]) {
 
     std::stringstream ss;
     ss << "lookup:" << argv[3];
-    send_command(sockfd, ss.str().c_str());
+    send_to_socket(sockfd, ss.str().c_str());
 
     char buf[SOCKET_TRANSFER_LIMIT];
-    receive_response(sockfd, buf);
+    receive_from_socket(sockfd, buf);
 
     printf("%s", buf);
 

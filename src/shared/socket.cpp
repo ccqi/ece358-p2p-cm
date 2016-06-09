@@ -67,7 +67,7 @@ void disconnect_from_server(uint8_t sockfd) {
     }
 }
 
-void send_command(int8_t sockfd, const char *command) {
+void send_to_socket(int8_t sockfd, const char *command) {
     char buf[SOCKET_TRANSFER_LIMIT];
     strncpy(buf, command, SOCKET_TRANSFER_LIMIT);
     buf[SOCKET_TRANSFER_LIMIT - 1] = 0;
@@ -78,7 +78,7 @@ void send_command(int8_t sockfd, const char *command) {
     }
 }
 
-void receive_response(int8_t sockfd, char *response) {
+void receive_from_socket(int8_t sockfd, char *response) {
     ssize_t recvlen;
     if ((recvlen = recv(sockfd, response, SOCKET_TRANSFER_LIMIT - 1, 0)) < 0) {
         perror("error receiving response from server");
