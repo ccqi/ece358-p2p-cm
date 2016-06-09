@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     char buf[SOCKET_TRANSFER_LIMIT];
     receive_from_socket(sockfd, buf);
 
-    printf("%s", buf);
+    printf("%s\n", buf);
 
     disconnect_from_server(sockfd);
 
