@@ -18,9 +18,6 @@ int main(int argc, char *argv[]) {
     ss << "removepeer:" << argv[1] << ":" << argv[2];
     send_to_socket(sockfd, ss.str().c_str());
 
-    char buf[SOCKET_TRANSFER_LIMIT];
-    receive_from_socket(sockfd, buf);
-
     disconnect_from_server(sockfd);
 
     return 0;

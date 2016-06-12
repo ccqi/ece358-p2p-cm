@@ -11,11 +11,12 @@ build/%.o: src/*/%.cpp
 	${CXX} $(LD_FLAGS) -o $@ $^
 
 
-BINARIES := addcontent addpeer lookupcontent peer removecontent removepeer
+BINARIES := addcontent addpeer debug lookupcontent peer removecontent removepeer
 all: $(BINARIES)
 
 addcontent: build/addcontent.o build/socket.o
 addpeer: build/addpeer.o
+debug: build/debug.o build/socket.o
 lookupcontent: build/lookupcontent.o build/socket.o
 peer: build/peer.o build/address.o build/content.o build/nodes.o build/socket.o
 removecontent: build/removecontent.o build/socket.o

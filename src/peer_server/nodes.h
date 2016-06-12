@@ -20,6 +20,8 @@ void clone_node(int peers, int content, char *lip, char *lport, char *rip,
 
 void connect_node(char *replace_ip, char *replace_port, char *ip, char *port);
 
+void debug_node();
+
 void init_node(char *ip, char *port);
 
 void remove_self(char *ip, char *port);

@@ -82,10 +82,6 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        if (close(sockfd) < 0) {
-            perror("error closing socket as child");
-        }
-
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_from_socket(connectedsock, buf);
         printf("received %s\n", buf);
@@ -131,10 +127,16 @@ int main(int argc, char *argv[]) {
             char *ipNew = strtok(NULL, ":");
             char *portNew = strtok(NULL, ":");
             connect_node(ipReplace, portReplace, ipNew, portNew);
+        } else if (strcmp(buf, "debug") == 0) {
+            debug_node();
         } else {
             // TODO: some sort of error
         }
         // TODO: Error cases
+
+        if (close(sockfd) < 0) {
+            perror("error closing socket as child");
+        }
 
         return 0;
     }

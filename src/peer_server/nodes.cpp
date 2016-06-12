@@ -90,6 +90,15 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
     forward(ss.str().c_str());
 }
 
+void debug_node() {
+    printf("Debugging node:\n");
+    printf(" node data: %s:%s, with %d/%d content, and %d total peers\n",
+           self.ip, self.port, 0/*TODO: my_content*/, total_content,
+           total_peers);
+    printf(" left data: %s:%s\n", left.ip, left.port);
+    printf(" right data: %s:%s\n", right.ip, right.port);
+}
+
 void init_node(char *ip, char *port) {
     self = left = right = addr_info(ip, port);
     total_peers = 1;
