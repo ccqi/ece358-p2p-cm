@@ -40,7 +40,7 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
     server.sin_port = 0;
 
     create_server(sockfd, &server, alen);
-    printf("%s %d\n", ip, server.sin_port);
+    printf("%s %d\n", ip, ntohs(server.sin_port));
 
     if (join_network) {
         join(ip, server.sin_port, args);
