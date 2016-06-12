@@ -6,8 +6,8 @@
 #include "../shared/socket.h"
 
 int main(int argc, char *argv[]) {
-    if (argc != 4) {
-        printf("usage: ./removecontent <address> <port> <key>\n");
+    if (argc != 3) {
+        printf("usage: ./debug <address> <port>\n");
         exit(1);
     }
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     connect_to_server(&sockfd, argv[1], argv[2]);
 
     std::stringstream ss;
-    ss << "delete:" << argv[3];
+    ss << "debug:" << argv[1] << ":" << argv[2];
     send_to_socket(sockfd, ss.str().c_str());
 
     disconnect_from_server(sockfd);

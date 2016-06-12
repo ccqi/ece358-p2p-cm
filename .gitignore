@@ -4,6 +4,7 @@ samples/
 
 addcontent
 addpeer
+debug
 lookupcontent
 peer
 removecontent

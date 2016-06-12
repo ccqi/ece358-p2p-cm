@@ -1,3 +1,4 @@
+#include <sstream>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,10 +14,9 @@ int main(int argc, char *argv[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, argv[1], argv[2]);
 
-    send_to_socket(sockfd, "remove");
-
-    char buf[SOCKET_TRANSFER_LIMIT];
-    receive_from_socket(sockfd, buf);
+    std::stringstream ss;
+    ss << "removepeer:" << argv[1] << ":" << argv[2];
+    send_to_socket(sockfd, ss.str().c_str());
 
     disconnect_from_server(sockfd);
 

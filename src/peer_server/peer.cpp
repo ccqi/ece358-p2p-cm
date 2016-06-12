@@ -1,5 +1,4 @@
 #include <arpa/inet.h>
-#include <ifaddrs.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
@@ -16,17 +15,16 @@
 #include "../shared/socket.h"
 
 #include "content.h"
+#include "nodes.h"
 
-void join(char *ip, uint8_t port, char *args[]) {
+void join(char *ip, char *port, char *args[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, args[1], args[2]);
+    printf("%s:%s joined %s:%s\n", ip, port, args[1], args[2]);
 
     std::stringstream ss;
     ss << "newpeer:" << ip << ":" << port;
     send_to_socket(sockfd, ss.str().c_str());
-
-    char buf[SOCKET_TRANSFER_LIMIT];
-    receive_from_socket(sockfd, buf); // TODO: receives peer list
 
     disconnect_from_server(sockfd);
 }
@@ -42,8 +40,12 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
     create_server(sockfd, &server, alen);
     printf("%s %d\n", ip, ntohs(server.sin_port));
 
+    char *port = new char[6];
+    sprintf(port, "%d", ntohs(server.sin_port));
+    init_node(ip, port);
+
     if (join_network) {
-        join(ip, server.sin_port, args);
+        join(ip, port, args);
     }
 }
 
@@ -57,12 +59,12 @@ int main(int argc, char *argv[]) {
     socklen_t alen = 0;
     init(&sockfd, &alen, argc == 3, argv);
 
-    for (;;) {
-        if (listen(sockfd, 0) < 0) {
-            perror("error listening on socket");
-            exit(1);
-        }
+    if (listen(sockfd, 5) < 0) {
+        perror("error listening on socket");
+        exit(1);
+    }
 
+    for (;;) {
         int8_t connectedsock;
         struct sockaddr_in client;
         alen = sizeof(struct sockaddr_in);
@@ -72,20 +74,9 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        if (fork()) {
-            if (close(connectedsock) < 0) {
-                perror("error closing socket as parent");
-            }
-
-            continue;
-        }
-
-        if (close(sockfd) < 0) {
-            perror("error closing socket as child");
-        }
-
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_from_socket(connectedsock, buf);
+        printf("received %s\n", buf);
 
         char *command = strtok(buf, ":");
         if (strcmp(command, "insert") == 0) {
@@ -96,27 +87,49 @@ int main(int argc, char *argv[]) {
             send_to_socket(connectedsock, value);
         } else if (strcmp(buf, "delete") == 0) {
             delete_content(strtok(NULL, ":"));
-        } else if (strcmp(buf, "remove") == 0) {
-            // remove self from network
         } else if (strcmp(buf, "newpeer") == 0) {
             char *ip = strtok(NULL, ":");
             char *port = strtok(NULL, ":");
-            (void)ip;
-            (void)port;
-            // add peer with ip and port to network
+            add_node(ip, port);
         } else if (strcmp(buf, "removepeer") == 0) {
             char *ip = strtok(NULL, ":");
             char *port = strtok(NULL, ":");
-            (void)ip;
-            (void)port;
-            // remove peer with ip and port to network
+            remove_self(ip, port);
+        } else if (strcmp(buf, "removenode") == 0) {
+            char *ipRemove = strtok(NULL, ":");
+            char *portRemove = strtok(NULL, ":");
+            char *ipLeft = strtok(NULL, ":");
+            char *portLeft = strtok(NULL, ":");
+            char *ipRight = strtok(NULL, ":");
+            char *portRight = strtok(NULL, ":");
+            remove_node(ipRemove, portRemove, ipLeft, portLeft, ipRight,
+                        portRight);
+        } else if (strcmp(buf, "clonepeer") == 0) {
+            int total_peers = atoi(strtok(NULL, ":"));
+            int total_content = atoi(strtok(NULL, ":"));
+            char *ipLeft = strtok(NULL, ":");
+            char *portLeft = strtok(NULL, ":");
+            char *ipRight = strtok(NULL, ":");
+            char *portRight = strtok(NULL, ":");
+            clone_node(total_peers, total_content, ipLeft, portLeft, ipRight,
+                       portRight);
+        } else if (strcmp(buf, "connectnewpeer") == 0) {
+            char *ipReplace = strtok(NULL, ":");
+            char *portReplace = strtok(NULL, ":");
+            char *ipNew = strtok(NULL, ":");
+            char *portNew = strtok(NULL, ":");
+            connect_node(ipReplace, portReplace, ipNew, portNew);
+        } else if (strcmp(buf, "debug") == 0) {
+            debug_node();
         } else {
             // TODO: some sort of error
         }
         // TODO: Error cases
-
-        disconnect_from_server(connectedsock);
-
-        return 0;
     }
+
+    if (close(sockfd) < 0) {
+        perror("error closing socket as child");
+    }
+
+    return 0;
 }
