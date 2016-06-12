@@ -12,7 +12,7 @@ int total_peers;
 int total_content;
 
 void forward(const char *message) {
-    if (right.ip == self.ip && right.port == self.port) {
+    if (strcmp(right.ip, self.ip) == 0 && strcmp(right.port, self.port) == 0) {
         return;
     }
 
@@ -28,7 +28,7 @@ void add_node(char *ip, char *port) {
            right.port);
 
     addr_info old_right;
-    if (right.ip == self.ip && right.port == self.port) {
+    if (strcmp(right.ip, self.ip) == 0 && strcmp(right.port, self.port) == 0) {
         left = addr_info(ip, port);
         old_right = self;
     } else {
@@ -68,12 +68,13 @@ void clone_node(int peers, int content, char *lip, char *lport, char *rip,
 }
 
 void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
-    if (self.ip == ip && self.port == port) {
+    if (strcmp(self.ip, ip) == 0 && strcmp(self.port, port) == 0) {
         // completed full round of circle
         return;
     }
 
-    if (left.ip == replace_ip && left.port == replace_port) {
+    if (strcmp(left.ip, replace_ip) == 0 &&
+        strcmp(left.port, replace_port) == 0) {
         // replace left with the new peer
         left = addr_info(ip, port);
         printf("%s left is now %s\n", self.port, left.port);
@@ -93,7 +94,7 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
 void debug_node() {
     printf("Debugging node:\n");
     printf(" node data: %s:%s, with %d/%d content, and %d total peers\n",
-           self.ip, self.port, 0/*TODO: my_content*/, total_content,
+           self.ip, self.port, 0 /*TODO: my_content*/, total_content,
            total_peers);
     printf(" left data: %s:%s\n", left.ip, left.port);
     printf(" right data: %s:%s\n", right.ip, right.port);
@@ -101,12 +102,13 @@ void debug_node() {
 
 void init_node(char *ip, char *port) {
     self = left = right = addr_info(ip, port);
+
     total_peers = 1;
     total_content = 0;
 }
 
 void remove_self(char *ip, char *port) {
-    if (self.ip != ip || self.port != port) {
+    if (strcmp(self.ip, ip) != 0 || strcmp(self.port, port) != 0) {
         // error
         return;
     }
@@ -119,7 +121,8 @@ void remove_self(char *ip, char *port) {
 
 void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
                  char *rip, char *rport) {
-    if (self.ip == remove_ip && self.port == remove_port) {
+    if (strcmp(self.ip, remove_ip) == 0 &&
+        strcmp(self.port, remove_port) == 0) {
         // completed full round of circle, not
         return;
     }
@@ -127,10 +130,12 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
     --total_peers;
     printf("decremented peers to %d\n", total_peers);
 
-    if (right.ip == remove_ip && right.port == remove_port) {
+    if (strcmp(right.ip, remove_ip) == 0 &&
+        strcmp(right.port, remove_port) == 0) {
         right = addr_info(rip, rport);
     }
-    if (left.ip == remove_ip && left.port == remove_port) {
+    if (strcmp(left.ip, remove_ip) == 0 &&
+        strcmp(left.port, remove_port) == 0) {
         left = addr_info(lip, lport);
     }
 

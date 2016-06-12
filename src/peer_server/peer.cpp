@@ -74,14 +74,6 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        if (fork()) {
-            if (close(connectedsock) < 0) {
-                perror("error closing socket as parent");
-            }
-
-            continue;
-        }
-
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_from_socket(connectedsock, buf);
         printf("received %s\n", buf);
@@ -133,11 +125,11 @@ int main(int argc, char *argv[]) {
             // TODO: some sort of error
         }
         // TODO: Error cases
-
-        if (close(sockfd) < 0) {
-            perror("error closing socket as child");
-        }
-
-        return 0;
     }
+
+    if (close(sockfd) < 0) {
+        perror("error closing socket as child");
+    }
+
+    return 0;
 }
