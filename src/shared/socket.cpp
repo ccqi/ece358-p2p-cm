@@ -56,7 +56,6 @@ void create_server(int8_t *sockfd, void *server, socklen_t *alen) {
 }
 
 void connect_to_server(int8_t *sockfd, char *ip, char *port) {
-    printf("trying to connect to server %s:%s\n", ip, port);
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     inet_aton(ip, &(server.sin_addr));

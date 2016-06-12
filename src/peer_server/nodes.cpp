@@ -43,7 +43,7 @@ void add_node(char *ip, char *port) {
 
 void clone_node(int peers, int content, char *lip, char *lport, char *rip,
                 char *rport) {
-    total_peers = peers++;
+    total_peers = ++peers;
     printf("incremented peers to %d\n", total_peers);
     total_content = content;
 
@@ -78,7 +78,7 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
         printf("%s left is now %s\n", self.port, left.port);
     }
 
-    total_peers++;
+    ++total_peers;
     printf("incremented peers to %d\n", total_peers);
     printf("sending connectnewpeer from %s:%s to %s:%s\n", self.ip, self.port,
            right.ip, right.port);
@@ -125,7 +125,7 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
         return;
     }
 
-    total_peers--;
+    --total_peers;
     printf("decremented peers to %d\n", total_peers);
 
     if (right.ip == remove_ip && right.port == remove_port) {

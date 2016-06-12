@@ -1,5 +1,4 @@
 #include <arpa/inet.h>
-#include <ifaddrs.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
@@ -21,7 +20,7 @@
 void join(char *ip, char *port, char *args[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, args[1], args[2]);
-    printf("%s:%d joined %s:%s\n", ip, ntohs(atoi(port)), args[1], args[2]);
+    printf("%s:%s joined %s:%s\n", ip, port, args[1], args[2]);
 
     std::stringstream ss;
     ss << "newpeer:" << ip << ":" << port;
@@ -42,7 +41,7 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
     printf("%s %d\n", ip, ntohs(server.sin_port));
 
     char *port = new char[6];
-    sprintf(port, "%d", server.sin_port);
+    sprintf(port, "%d", ntohs(server.sin_port));
     init_node(ip, port);
 
     if (join_network) {
