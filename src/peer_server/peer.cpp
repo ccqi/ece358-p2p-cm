@@ -32,7 +32,7 @@ void addPeer(char *ip, char *port) {
     printf("%s:%s adding peer %s:%s\n", selfInfo.ip, selfInfo.port, ip, port);
     printf("%s:%s right is currently %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
     addrInfo oldRight;
-    if (right.ip == NULL) {
+    if (right.ip == selfInfo.ip && right.port == selfInfo.port) {
       left = addrInfo(ip, port);
       oldRight = selfInfo;
     } else {
@@ -97,6 +97,49 @@ void connectNewPeer(char *ipReplace, char *portReplace, char *ipNew, char *portN
     disconnect_from_server(rightSockfd);
 }
 
+void removeSelf(char *ip, char *port) {
+    if (selfInfo.ip != ip || selfInfo.port != port) {
+      // error
+      return;
+    }
+
+    int8_t rightSockfd = -1;
+    connect_to_server(&rightSockfd, right.ip, right.port);
+
+    std::stringstream ss;
+    ss << "removenode:" << selfInfo.ip << ":" << selfInfo.port << ":" << left.ip << ":" << left.port << ":" << right.ip << ":" << right.port;
+    send_to_socket(rightSockfd, ss.str().c_str());
+
+    disconnect_from_server(rightSockfd);
+}
+
+void removeNode(char *ipRemove, char *portRemove, char *ipLeft, char *portLeft, char *ipRight, char *portRight) {
+    if (selfInfo.ip == ipRemove && selfInfo.port == portRemove) {
+      // completed full round of circle, not
+      return;
+    }
+    
+    totalPeers--;
+    printf("decremented peers to %d\n", totalPeers);
+
+    if (right.ip == ipRemove && right.port == portRemove) {
+      right = addrInfo(ipRight, portRight);
+    }
+    if (left.ip == ipRemove && left.port == portRemove) {
+      left = addrInfo(ipLeft, portLeft);
+    }
+
+    // forward message to item connected to its right
+    int8_t rightSockfd = -1;
+    connect_to_server(&rightSockfd, right.ip, right.port);
+
+    std::stringstream ss;
+    ss << "removenode:" << ipRemove << ":" << portRemove;
+    send_to_socket(rightSockfd, ss.str().c_str());
+
+    disconnect_from_server(rightSockfd);
+}
+
 void join(char *ip, char *port, char *args[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, args[1], args[2]);
@@ -121,7 +164,7 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
     printf("%s %d\n", ip, ntohs(server.sin_port));
     char *port = new char[6];
     sprintf(port, "%d", server.sin_port);
-    selfInfo = addrInfo(ip, port);
+    selfInfo = left = right = addrInfo(ip, port);
     totalPeers = 1;
     totalContent = 0;
 
@@ -191,8 +234,16 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(buf, "removepeer") == 0) {
             char *ip = strtok(NULL, ":");
             char *port = strtok(NULL, ":");
-            (void)ip;
-            (void)port;
+            removeSelf(ip, port);
+            // remove peer with ip and port to network
+        } else if (strcmp(buf, "removenode") == 0) {
+            char *ipRemove = strtok(NULL, ":");
+            char *portRemove = strtok(NULL, ":");
+            char *ipLeft = strtok(NULL, ":");
+            char *portLeft = strtok(NULL, ":");
+            char *ipRight = strtok(NULL, ":");
+            char *portRight = strtok(NULL, ":");
+            removeNode(ipRemove, portRemove, ipLeft, portLeft, ipRight, portRight);
             // remove peer with ip and port to network
         } else if (strcmp(buf, "clonepeer") == 0) {
             int totalPeers = atoi(strtok(NULL, ":"));
