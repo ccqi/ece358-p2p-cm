@@ -43,6 +43,13 @@ void create_server(int8_t *sockfd, void *server, socklen_t *alen) {
         exit(1);
     }
 
+    int opt = 1;
+    if (setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+                   sizeof(opt)) < 0) {
+        perror("could not set socket options");
+        exit(1);
+    }
+
     if (mybind(*sockfd, (struct sockaddr_in *)server) < 0) {
         perror("could not bind to socket");
         exit(1);

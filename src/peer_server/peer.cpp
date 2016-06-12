@@ -59,12 +59,12 @@ int main(int argc, char *argv[]) {
     socklen_t alen = 0;
     init(&sockfd, &alen, argc == 3, argv);
 
-    for (;;) {
-        if (listen(sockfd, 0) < 0) {
-            perror("error listening on socket");
-            exit(1);
-        }
+    if (listen(sockfd, 5) < 0) {
+        perror("error listening on socket");
+        exit(1);
+    }
 
+    for (;;) {
         int8_t connectedsock;
         struct sockaddr_in client;
         alen = sizeof(struct sockaddr_in);
@@ -136,7 +136,6 @@ int main(int argc, char *argv[]) {
         }
         // TODO: Error cases
 
-        disconnect_from_server(connectedsock);
         return 0;
     }
 }
