@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        uint8_t connectedsock;
+        int8_t connectedsock;
         struct sockaddr_in client;
         alen = sizeof(struct sockaddr_in);
         if ((connectedsock =
