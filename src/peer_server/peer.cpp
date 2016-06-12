@@ -29,29 +29,30 @@ int totalPeers;
 int totalContent;
 
 void addPeer(char *ip, char *port) {
-  printf("%s:%s adding peer %s:%s\n", selfInfo.ip, selfInfo.port, ip, port);
-  printf("%s:%s right is currently %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
-  if (right.ip == NULL) {
+    printf("%s:%s adding peer %s:%s\n", selfInfo.ip, selfInfo.port, ip, port);
+    printf("%s:%s right is currently %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
+    addrInfo oldRight;
+    if (right.ip == NULL) {
+      left = addrInfo(ip, port);
+      oldRight = selfInfo;
+    } else {
+      oldRight = right;
+    }
     right = addrInfo(ip, port);
-    left = addrInfo(ip, port);
     printf("%s:%s right is now %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
-  } else {
-    addrInfo oldRight = right;
-    right = addrInfo(ip, port);
-    printf("%s:%s telling %s:%s to clone\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
     int8_t rightSockfd = -1;
     connect_to_server(&rightSockfd, right.ip, right.port);
-
     std::stringstream ss;
     ss << "clonepeer:" << totalPeers << ":" << totalContent << ":" << selfInfo.ip << ":" << selfInfo.port << ":" << oldRight.ip << ":" << oldRight.port;
     send_to_socket(rightSockfd, ss.str().c_str());
 
     disconnect_from_server(rightSockfd);
-  }
+    printf("%s:%s told %s:%s to clone with right %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port, oldRight.ip, oldRight.port);
 }
 
 void clonePeer(int _totalPeers, int _totalContent, char *ipLeft, char *portLeft, char *ipRight, char *portRight) {
     totalPeers = _totalPeers++;
+    printf("incremented peers to %d\n", totalPeers);
     totalContent = _totalContent;
 
     left = addrInfo(ipLeft, portLeft);
@@ -59,6 +60,7 @@ void clonePeer(int _totalPeers, int _totalContent, char *ipLeft, char *portLeft,
 
     printf("created %s with left %s and right %s\n", selfInfo.port, left.port, right.port);
 
+    printf("sending connectNewPeer from %s:%s to %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
     int8_t rightSockfd = -1;
     connect_to_server(&rightSockfd, right.ip, right.port);
 
@@ -81,6 +83,8 @@ void connectNewPeer(char *ipReplace, char *portReplace, char *ipNew, char *portN
       printf("%s left is now %s\n", selfInfo.port, left.port);
     }
     totalPeers++;
+    printf("incremented peers to %d\n", totalPeers);
+    printf("sending connectNewPeer from %s:%s to %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
 
     // forward message to item connected to its right
     int8_t rightSockfd = -1;
@@ -118,6 +122,8 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
     char *port = new char[6];
     sprintf(port, "%d", server.sin_port);
     selfInfo = addrInfo(ip, port);
+    totalPeers = 1;
+    totalContent = 0;
 
     if (join_network) {
         join(ip, port, args);
@@ -153,6 +159,7 @@ int main(int argc, char *argv[]) {
             if (close(connectedsock) < 0) {
                 perror("error closing socket as parent");
             }
+            printf("right %s\n", right.ip);
 
             continue;
         }
@@ -163,6 +170,7 @@ int main(int argc, char *argv[]) {
 
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_from_socket(connectedsock, buf);
+        printf("received %s\n", buf);
 
         char *command = strtok(buf, ":");
         if (strcmp(command, "insert") == 0) {
