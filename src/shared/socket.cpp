@@ -7,14 +7,43 @@
 
 #include "socket.h"
 
+int mybind(int sockfd, struct sockaddr_in *addr) {
+    if (sockfd < 1) {
+        fprintf(stderr, "mybind(): sockfd has invalid value %d\n", sockfd);
+        return -1;
+    }
+
+    if (addr == NULL) {
+        fprintf(stderr, "mybind(): addr is NULL\n");
+        return -1;
+    }
+
+    unsigned short p;
+    for (p = PORT_RANGE_LO; p <= PORT_RANGE_HI; p++) {
+        addr->sin_port = htons(p);
+        if (bind(sockfd, (const struct sockaddr *)addr,
+                 sizeof(struct sockaddr_in)) >= 0) {
+            break;
+        }
+    }
+
+    if (p > PORT_RANGE_HI) {
+        fprintf(
+            stderr,
+            "mybind(): all bind() attempts failed. No port available...?\n");
+        return -1;
+    }
+
+    return 0;
+}
+
 void create_server(int8_t *sockfd, void *server, socklen_t *alen) {
     if ((*sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("could not open socket");
         exit(1);
     }
 
-    // TODO: use mybind
-    if (bind(*sockfd, (struct sockaddr *)server, sizeof(struct sockaddr)) < 0) {
+    if (mybind(*sockfd, (struct sockaddr_in *)server) < 0) {
         perror("could not bind to socket");
         exit(1);
     }
@@ -41,8 +70,7 @@ void connect_to_server(int8_t *sockfd, char *ip, char *port) {
     client.sin_family = AF_INET;
     client.sin_addr.s_addr = htonl(INADDR_ANY);
     client.sin_port = 0;
-    if (bind(*sockfd, (struct sockaddr *)&client, sizeof(struct sockaddr_in)) <
-        0) {
+    if (mybind(*sockfd, (struct sockaddr_in *)&client) < 0) {
         perror("could not bind to socket");
         exit(1);
     }
