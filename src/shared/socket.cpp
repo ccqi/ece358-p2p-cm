@@ -56,10 +56,16 @@ void create_server(int8_t *sockfd, void *server, socklen_t *alen) {
 }
 
 void connect_to_server(int8_t *sockfd, char *ip, char *port) {
+    printf("trying to connect to char server %s:%s\n", ip, port);
+  connect_to_server(sockfd, ip, atoi(port));
+}
+
+void connect_to_server(int8_t *sockfd, char *ip, uint8_t port) {
+    printf("trying to connect to server %s:%d\n", ip, port);
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     inet_aton(ip, &(server.sin_addr));
-    server.sin_port = htons(atoi(port));
+    server.sin_port = htons(port);
 
     if ((*sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("could not open socket");
