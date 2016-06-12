@@ -18,11 +18,15 @@
 #include "content.h"
 
 struct addrInfo {
-  char *ip;
-  char *port;
+    char *ip;
+    char *port;
 
-  addrInfo(char *_ip, char *_port) { ip = _ip; port = _port; }
-  addrInfo() {}
+    addrInfo(char *_ip, char *_port) {
+        ip = _ip;
+        port = _port;
+    }
+    addrInfo() {
+    }
 } selfInfo, left, right;
 
 int totalPeers;
@@ -30,27 +34,33 @@ int totalContent;
 
 void addPeer(char *ip, char *port) {
     printf("%s:%s adding peer %s:%s\n", selfInfo.ip, selfInfo.port, ip, port);
-    printf("%s:%s right is currently %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
+    printf("%s:%s right is currently %s:%s\n", selfInfo.ip, selfInfo.port,
+           right.ip, right.port);
     addrInfo oldRight;
     if (right.ip == selfInfo.ip && right.port == selfInfo.port) {
-      left = addrInfo(ip, port);
-      oldRight = selfInfo;
+        left = addrInfo(ip, port);
+        oldRight = selfInfo;
     } else {
-      oldRight = right;
+        oldRight = right;
     }
     right = addrInfo(ip, port);
-    printf("%s:%s right is now %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
+    printf("%s:%s right is now %s:%s\n", selfInfo.ip, selfInfo.port, right.ip,
+           right.port);
     int8_t rightSockfd = -1;
     connect_to_server(&rightSockfd, right.ip, right.port);
     std::stringstream ss;
-    ss << "clonepeer:" << totalPeers << ":" << totalContent << ":" << selfInfo.ip << ":" << selfInfo.port << ":" << oldRight.ip << ":" << oldRight.port;
+    ss << "clonepeer:" << totalPeers << ":" << totalContent << ":"
+       << selfInfo.ip << ":" << selfInfo.port << ":" << oldRight.ip << ":"
+       << oldRight.port;
     send_to_socket(rightSockfd, ss.str().c_str());
 
     disconnect_from_server(rightSockfd);
-    printf("%s:%s told %s:%s to clone with right %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port, oldRight.ip, oldRight.port);
+    printf("%s:%s told %s:%s to clone with right %s:%s\n", selfInfo.ip,
+           selfInfo.port, right.ip, right.port, oldRight.ip, oldRight.port);
 }
 
-void clonePeer(int _totalPeers, int _totalContent, char *ipLeft, char *portLeft, char *ipRight, char *portRight) {
+void clonePeer(int _totalPeers, int _totalContent, char *ipLeft, char *portLeft,
+               char *ipRight, char *portRight) {
     totalPeers = _totalPeers++;
     printf("incremented peers to %d\n", totalPeers);
     totalContent = _totalContent;
@@ -58,40 +68,46 @@ void clonePeer(int _totalPeers, int _totalContent, char *ipLeft, char *portLeft,
     left = addrInfo(ipLeft, portLeft);
     right = addrInfo(ipRight, portRight);
 
-    printf("created %s with left %s and right %s\n", selfInfo.port, left.port, right.port);
+    printf("created %s with left %s and right %s\n", selfInfo.port, left.port,
+           right.port);
 
-    printf("sending connectNewPeer from %s:%s to %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
+    printf("sending connectNewPeer from %s:%s to %s:%s\n", selfInfo.ip,
+           selfInfo.port, right.ip, right.port);
     int8_t rightSockfd = -1;
     connect_to_server(&rightSockfd, right.ip, right.port);
 
     std::stringstream ss;
-    ss << "connectnewpeer:" << left.ip << ":" << left.port << ":" << selfInfo.ip << ":" << selfInfo.port;
+    ss << "connectnewpeer:" << left.ip << ":" << left.port << ":" << selfInfo.ip
+       << ":" << selfInfo.port;
     send_to_socket(rightSockfd, ss.str().c_str());
 
     disconnect_from_server(rightSockfd);
 }
 
-void connectNewPeer(char *ipReplace, char *portReplace, char *ipNew, char *portNew) {
+void connectNewPeer(char *ipReplace, char *portReplace, char *ipNew,
+                    char *portNew) {
     if (selfInfo.ip == ipNew && selfInfo.port == portNew) {
-      // completed full round of circle
-      return;
+        // completed full round of circle
+        return;
     }
 
     if (left.ip == ipReplace && left.port == portReplace) {
-      // replace left with the new peer
-      left = addrInfo(ipNew, portNew);
-      printf("%s left is now %s\n", selfInfo.port, left.port);
+        // replace left with the new peer
+        left = addrInfo(ipNew, portNew);
+        printf("%s left is now %s\n", selfInfo.port, left.port);
     }
     totalPeers++;
     printf("incremented peers to %d\n", totalPeers);
-    printf("sending connectNewPeer from %s:%s to %s:%s\n", selfInfo.ip, selfInfo.port, right.ip, right.port);
+    printf("sending connectNewPeer from %s:%s to %s:%s\n", selfInfo.ip,
+           selfInfo.port, right.ip, right.port);
 
     // forward message to item connected to its right
     int8_t rightSockfd = -1;
     connect_to_server(&rightSockfd, right.ip, right.port);
 
     std::stringstream ss;
-    ss << "connectNewPeer:" << ipReplace << ":" << portReplace << ":" << ipNew << ":" << portNew;
+    ss << "connectNewPeer:" << ipReplace << ":" << portReplace << ":" << ipNew
+       << ":" << portNew;
     send_to_socket(rightSockfd, ss.str().c_str());
 
     disconnect_from_server(rightSockfd);
@@ -99,34 +115,36 @@ void connectNewPeer(char *ipReplace, char *portReplace, char *ipNew, char *portN
 
 void removeSelf(char *ip, char *port) {
     if (selfInfo.ip != ip || selfInfo.port != port) {
-      // error
-      return;
+        // error
+        return;
     }
 
     int8_t rightSockfd = -1;
     connect_to_server(&rightSockfd, right.ip, right.port);
 
     std::stringstream ss;
-    ss << "removenode:" << selfInfo.ip << ":" << selfInfo.port << ":" << left.ip << ":" << left.port << ":" << right.ip << ":" << right.port;
+    ss << "removenode:" << selfInfo.ip << ":" << selfInfo.port << ":" << left.ip
+       << ":" << left.port << ":" << right.ip << ":" << right.port;
     send_to_socket(rightSockfd, ss.str().c_str());
 
     disconnect_from_server(rightSockfd);
 }
 
-void removeNode(char *ipRemove, char *portRemove, char *ipLeft, char *portLeft, char *ipRight, char *portRight) {
+void removeNode(char *ipRemove, char *portRemove, char *ipLeft, char *portLeft,
+                char *ipRight, char *portRight) {
     if (selfInfo.ip == ipRemove && selfInfo.port == portRemove) {
-      // completed full round of circle, not
-      return;
+        // completed full round of circle, not
+        return;
     }
-    
+
     totalPeers--;
     printf("decremented peers to %d\n", totalPeers);
 
     if (right.ip == ipRemove && right.port == portRemove) {
-      right = addrInfo(ipRight, portRight);
+        right = addrInfo(ipRight, portRight);
     }
     if (left.ip == ipRemove && left.port == portRemove) {
-      left = addrInfo(ipLeft, portLeft);
+        left = addrInfo(ipLeft, portLeft);
     }
 
     // forward message to item connected to its right
@@ -243,7 +261,8 @@ int main(int argc, char *argv[]) {
             char *portLeft = strtok(NULL, ":");
             char *ipRight = strtok(NULL, ":");
             char *portRight = strtok(NULL, ":");
-            removeNode(ipRemove, portRemove, ipLeft, portLeft, ipRight, portRight);
+            removeNode(ipRemove, portRemove, ipLeft, portLeft, ipRight,
+                       portRight);
             // remove peer with ip and port to network
         } else if (strcmp(buf, "clonepeer") == 0) {
             int totalPeers = atoi(strtok(NULL, ":"));
@@ -252,7 +271,8 @@ int main(int argc, char *argv[]) {
             char *portLeft = strtok(NULL, ":");
             char *ipRight = strtok(NULL, ":");
             char *portRight = strtok(NULL, ":");
-            clonePeer(totalPeers, totalContent, ipLeft, portLeft, ipRight, portRight);
+            clonePeer(totalPeers, totalContent, ipLeft, portLeft, ipRight,
+                      portRight);
         } else if (strcmp(buf, "connectnewpeer") == 0) {
             char *ipReplace = strtok(NULL, ":");
             char *portReplace = strtok(NULL, ":");
@@ -264,7 +284,7 @@ int main(int argc, char *argv[]) {
         }
         // TODO: Error cases
 
-        //disconnect_from_server(connectedsock);
+        // disconnect_from_server(connectedsock);
 
         return 0;
     }
