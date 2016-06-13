@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     connect_to_server(&sockfd, argv[1], argv[2]);
 
     std::stringstream ss;
-    ss << "insert:" << argv[3];
+    ss << "addcontent:" << argv[3];
     send_to_socket(sockfd, ss.str().c_str());
 
     char buf[SOCKET_TRANSFER_LIMIT];

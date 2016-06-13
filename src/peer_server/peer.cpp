@@ -23,7 +23,7 @@ void join(char *ip, char *port, char *args[]) {
     connect_to_server(&sockfd, args[1], args[2]);
 
     std::stringstream ss;
-    ss << "newpeer:" << ip << ":" << port;
+    ss << "addpeer:" << ip << ":" << port;
     send_to_socket(sockfd, ss.str().c_str());
 
     disconnect_from_server(sockfd);
@@ -79,20 +79,20 @@ int main(int argc, char *argv[]) {
         receive_from_socket(connectedsock, buf);
 
         char *command = strtok(buf, ":");
-        if (strcmp(command, "insert") == 0) {
+        if (strcmp(command, "addcontent") == 0) {
             char *val = strtok(NULL, ":");
             uint8_t key = insert_content(val);
 
             char *ckey = new char[6];
             sprintf(ckey, "%d", key);
             send_to_socket(connectedsock, ckey);
-        } else if (strcmp(command, "lookup") == 0) {
+        } else if (strcmp(command, "lookupcontent") == 0) {
             char *key = strtok(NULL, ":");
             char *value = read_content(atoi(key));
             send_to_socket(connectedsock, value);
-        } else if (strcmp(buf, "delete") == 0) {
+        } else if (strcmp(buf, "removecontent") == 0) {
             delete_content(atoi(strtok(NULL, ":")));
-        } else if (strcmp(buf, "newpeer") == 0) {
+        } else if (strcmp(buf, "addpeer") == 0) {
             char *ip = strtok(NULL, ":");
             char *port = strtok(NULL, ":");
             add_node(ip, port);
