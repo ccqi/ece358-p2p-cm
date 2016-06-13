@@ -14,6 +14,7 @@
 #include "../shared/address.h"
 #include "../shared/socket.h"
 
+#include "commands.h"
 #include "content.h"
 #include "nodes.h"
 #include "state.h"
@@ -78,59 +79,7 @@ int main(int argc, char *argv[]) {
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_from_socket(connectedsock, buf);
 
-        char *command = strtok(buf, ":");
-        if (strcmp(command, "addcontent") == 0) {
-            char *val = strtok(NULL, ":");
-            uint8_t key = insert_content(val);
-
-            char *ckey = new char[6];
-            sprintf(ckey, "%d", key);
-            send_to_socket(connectedsock, ckey);
-        } else if (strcmp(command, "lookupcontent") == 0) {
-            char *key = strtok(NULL, ":");
-            char *value = read_content(atoi(key));
-            send_to_socket(connectedsock, value);
-        } else if (strcmp(buf, "removecontent") == 0) {
-            delete_content(atoi(strtok(NULL, ":")));
-        } else if (strcmp(buf, "addpeer") == 0) {
-            char *ip = strtok(NULL, ":");
-            char *port = strtok(NULL, ":");
-            add_node(ip, port);
-        } else if (strcmp(buf, "removepeer") == 0) {
-            char *ip = strtok(NULL, ":");
-            char *port = strtok(NULL, ":");
-            remove_self(ip, port);
-        } else if (strcmp(buf, "removenode") == 0) {
-            char *ipRemove = strtok(NULL, ":");
-            char *portRemove = strtok(NULL, ":");
-            char *ipLeft = strtok(NULL, ":");
-            char *portLeft = strtok(NULL, ":");
-            char *ipRight = strtok(NULL, ":");
-            char *portRight = strtok(NULL, ":");
-            remove_node(ipRemove, portRemove, ipLeft, portLeft, ipRight,
-                        portRight);
-        } else if (strcmp(buf, "clonepeer") == 0) {
-            int total_peers = atoi(strtok(NULL, ":"));
-            int total_content = atoi(strtok(NULL, ":"));
-            char *ipLeft = strtok(NULL, ":");
-            char *portLeft = strtok(NULL, ":");
-            char *ipRight = strtok(NULL, ":");
-            char *portRight = strtok(NULL, ":");
-            clone_node(total_peers, total_content, ipLeft, portLeft, ipRight,
-                       portRight);
-        } else if (strcmp(buf, "connectnewpeer") == 0) {
-            char *ipReplace = strtok(NULL, ":");
-            char *portReplace = strtok(NULL, ":");
-            char *ipNew = strtok(NULL, ":");
-            char *portNew = strtok(NULL, ":");
-            connect_node(ipReplace, portReplace, ipNew, portNew);
-        } else if (strcmp(buf, "debug") == 0) {
-            debug_node();
-            debug_content();
-        } else {
-            // TODO: some sort of error
-        }
-        // TODO: Error cases
+        respond(strtok(buf, ":"), connectedsock);
     }
 
     if (close(sockfd) < 0) {

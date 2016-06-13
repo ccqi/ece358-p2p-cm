@@ -5,13 +5,6 @@
 #include "content.h"
 #include "state.h"
 
-void debug_content() {
-    printf("> content is:\n");
-    for (auto entry : data) {
-        printf(">>> %d:%s\n", entry.first, entry.second);
-    }
-}
-
 void delete_content(uint8_t key) {
     data.erase(key);
 }

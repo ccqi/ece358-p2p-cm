@@ -69,14 +69,6 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
     forward(ss.str().c_str());
 }
 
-void debug_node() {
-    printf("Debug info for %s:%s:\n", self.ip, self.port);
-    printf("> storing %d/%d content across %d peers\n", 0 /*TODO: my_content*/,
-           total_content, total_peers);
-    printf("> left peer is %s:%s\n", left.ip, left.port);
-    printf("> right peer is %s:%s\n", right.ip, right.port);
-}
-
 void init_node(char *ip, char *port) {
     self = left = right = addr_info(ip, port);
 
