@@ -1,11 +1,14 @@
 #pragma once
 
 #include <unordered_map>
+#include <stdint.h>
 
-extern std::unordered_map<char *, char *> data;
+extern std::unordered_map<uint8_t, char *> data;
 
-char *insert_content(char *value);
+uint8_t insert_content(char *value);
 
-char *read_content(char *key);
+char *read_content(uint8_t key);
 
-void delete_content(char *key);
+void delete_content(uint8_t key);
+
+void debug_content(char *tag);

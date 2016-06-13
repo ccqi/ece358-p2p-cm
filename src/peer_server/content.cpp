@@ -1,29 +1,29 @@
 #include <unordered_map>
 #include <stdlib.h>
+#include <stdint.h>
 
 #include "content.h"
 
-std::unordered_map<char *, char *> data;
+std::unordered_map<uint8_t, char *> data;
 
-char *insert_content(char *value) {
+uint8_t insert_content(char *value) {
     // TODO: find unused key
-    char *key = (char *)"123";
-    data[key] = value;
-    printf("%s\n", data.at(key));
+    uint8_t key = 123;
+    data.insert(std::make_pair(key, value));
     return key;
 }
 
-char *read_content(char *key) {
-    // TODO: why does this not have the value that line 12 has?
-    // Test case:
-    // $ ./peer
-    // $ ./addcontent peer_ip peer_port "test"
-    // test  # printed in ./peer window
-    // $ ./lookupcontent peer_ip peer_port 123
-    // # error in ./peer window
+char *read_content(uint8_t key) {
     return data.at(key);
 }
 
-void delete_content(char *key) {
+void delete_content(uint8_t key) {
     data.erase(key);
+}
+
+void debug_content(char *tag) {
+    printf("Debugging Content: %s\n", tag);
+    for(auto entry : data) {
+        printf("%d:%s\n", entry.first, entry.second);
+    }
 }
