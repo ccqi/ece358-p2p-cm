@@ -95,7 +95,7 @@ void connect_to_server(int8_t *sockfd, char *ip, char *port) {
     }
 }
 
-void disconnect_from_server(uint8_t sockfd) {
+void disconnect_from_server(int8_t sockfd) {
     if (shutdown(sockfd, SHUT_RDWR) < 0) {
         perror("error closing connection");
         exit(1);
