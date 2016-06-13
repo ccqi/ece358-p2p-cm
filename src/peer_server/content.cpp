@@ -1,11 +1,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unordered_map>
 
 #include "content.h"
-
-std::unordered_map<uint8_t, char *> data;
+#include "state.h"
 
 void debug_content() {
     printf("> content is:\n");

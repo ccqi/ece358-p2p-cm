@@ -16,6 +16,7 @@
 
 #include "content.h"
 #include "nodes.h"
+#include "state.h"
 
 void join(char *ip, char *port, char *args[]) {
     int8_t sockfd = -1;

@@ -5,11 +5,7 @@
 #include "../shared/socket.h"
 
 #include "nodes.h"
-
-addr_info self, left, right;
-
-int total_peers;
-int total_content;
+#include "state.h"
 
 void forward(const char *message) {
     if (strcmp(right.ip, self.ip) == 0 && strcmp(right.port, self.port) == 0) {
