@@ -1,6 +1,4 @@
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "content.h"
 #include "state.h"

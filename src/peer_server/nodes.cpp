@@ -1,8 +1,4 @@
 #include <sstream>
-#include <stdint.h>
-#include <stdio.h>
-
-#include "../shared/socket.h"
 
 #include "communication.h"
 #include "nodes.h"

@@ -15,8 +15,6 @@
 
 #include "commands.h"
 #include "communication.h"
-#include "content.h"
-#include "nodes.h"
 #include "state.h"
 
 void join(char *ip, char *port, char *args[]) {

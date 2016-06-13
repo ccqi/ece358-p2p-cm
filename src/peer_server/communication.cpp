@@ -8,6 +8,7 @@
 #include "../shared/socket.h"
 
 #include "communication.h"
+#include "state.h"
 
 void forward(const char *message) {
     int8_t sockfd = -1;
