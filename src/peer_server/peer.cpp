@@ -44,7 +44,10 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
 
     char *port = new char[6];
     sprintf(port, "%d", ntohs(server.sin_port));
-    init_node(ip, port);
+    self = left = right = addr_info(ip, port);
+
+    total_peers = 1;
+    total_content = 0;
 
     if (join_network) {
         join(ip, port, args);

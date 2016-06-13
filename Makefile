@@ -21,7 +21,7 @@ addcontent: build/addcontent.o build/socket.o
 addpeer: build/addpeer.o
 debug: build/debug.o build/socket.o
 lookupcontent: build/lookupcontent.o build/socket.o
-peer: build/peer.o build/address.o build/commands.o build/content.o build/nodes.o build/socket.o build/state.o
+peer: build/peer.o build/address.o build/commands.o build/communication.o build/content.o build/nodes.o build/socket.o build/state.o
 removecontent: build/removecontent.o build/socket.o
 removepeer: build/removepeer.o build/socket.o
 

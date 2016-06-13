@@ -60,10 +60,7 @@ void removecontent() {
 }
 
 void removepeer() {
-    char *ip = strtok(NULL, ":");
-    char *port = strtok(NULL, ":");
-
-    remove_self(ip, port);
+    remove_self();
 }
 
 /*
@@ -122,6 +119,7 @@ void respond(const char *command, int8_t connectedsock) {
         return;
     } else if (strcmp(command, "removepeer") == 0) {
         removepeer();
+        exit(0);  // shut down on succesful removal
         return;
     }
 
