@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     connect_to_server(&sockfd, argv[1], argv[2]);
 
     std::stringstream ss;
-    ss << "removepeer:" << argv[1] << ":" << argv[2];
+    ss << "removepeer";
     send_to_socket(sockfd, ss.str().c_str());
 
     disconnect_from_server(sockfd);

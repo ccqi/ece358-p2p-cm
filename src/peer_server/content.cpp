@@ -1,18 +1,7 @@
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unordered_map>
 
 #include "content.h"
-
-std::unordered_map<uint8_t, char *> data;
-
-void debug_content() {
-    printf("> content is:\n");
-    for (auto entry : data) {
-        printf(">>> %d:%s\n", entry.first, entry.second);
-    }
-}
+#include "state.h"
 
 void delete_content(uint8_t key) {
     data.erase(key);
