@@ -13,7 +13,9 @@ build/%.o: src/*/%.cpp
 
 
 BINARIES := addcontent addpeer debug lookupcontent peer removecontent removepeer
-all: $(BINARIES)
+all: build $(BINARIES)
+build:
+	mkdir build
 
 addcontent: build/addcontent.o build/socket.o
 addpeer: build/addpeer.o
@@ -34,6 +36,6 @@ a1-358s16.zip: src README Makefile
 
 
 clean:
-	rm -f build/*.o
+	rm -rf build
 	rm -f $(BINARIES)
 	rm -f a1-358s16.zip
