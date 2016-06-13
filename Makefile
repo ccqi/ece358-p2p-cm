@@ -10,12 +10,12 @@ build/%.o: src/*/%.cpp
 	${CXX} $(CXX_FLAGS) -c -o $@ $<
 %: build/%.o
 	${CXX} $(LD_FLAGS) -o $@ $^
+	make peer  # I know, but the test script is stupid.
 
 
-BINARIES := addcontent addpeer debug lookupcontent peer removecontent removepeer
-all: build $(BINARIES)
-build:
-	mkdir build
+COMMANDS := addcontent addpeer lookupcontent removecontent removepeer
+BINARIES := $(COMMANDS) debug peer
+all: $(BINARIES)
 
 addcontent: build/addcontent.o build/socket.o
 addpeer: build/addpeer.o
@@ -29,13 +29,17 @@ style:
 	clang-format -style="{BasedOnStyle: llvm, IndentWidth: 4, AllowShortFunctionsOnASingleLine: None, KeepEmptyLinesAtTheStartOfBlocks: false}" -i src/*/*.cpp
 	clang-format -style="{BasedOnStyle: llvm, IndentWidth: 4, AllowShortFunctionsOnASingleLine: None, KeepEmptyLinesAtTheStartOfBlocks: false}" -i src/*/*.h
 
+.PHONY: test
+test: zip
+	test/runner.sh
 
 zip: clean a1-358s16.zip
 a1-358s16.zip: src README Makefile
-	zip -r a1-358s16.zip src README Makefile
+	zip -r a1-358s16.zip build src README Makefile
 
 
 clean:
-	rm -rf build
+	rm -f build/*.o
+	rm -rf test/work
 	rm -f $(BINARIES)
 	rm -f a1-358s16.zip

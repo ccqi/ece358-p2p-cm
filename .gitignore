@@ -1,5 +1,9 @@
-build/
 samples/
+test/work/
+
+*.o
+
+a1-358s16.zip
 
 addcontent
 addpeer

@@ -38,6 +38,7 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
 
     create_server(sockfd, &server, alen);
     printf("%s %d\n", ip, ntohs(server.sin_port));
+    fflush(stdout);
 
     char *port = new char[6];
     sprintf(port, "%d", ntohs(server.sin_port));
