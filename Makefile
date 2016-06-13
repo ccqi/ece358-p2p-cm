@@ -4,7 +4,7 @@ OBJ_FILES := $(addprefix build/,$(notdir $(CXX_FILES:.cpp=.o)))
 
 CXX_FLAGS := -O2 -std=c++11
 CXX_FLAGS += -g -Wall -Wextra -Wpedantic -Werror -Wstrict-overflow -fno-strict-aliasing -Wno-missing-field-initializers
-LD_FLAGS :=
+LD_FLAGS := -O2
 
 build/%.o: src/*/%.cpp
 	${CXX} $(CXX_FLAGS) -c -o $@ $<
