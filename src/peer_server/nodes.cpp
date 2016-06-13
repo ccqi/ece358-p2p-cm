@@ -23,10 +23,6 @@ void forward(const char *message) {
 }
 
 void add_node(char *ip, char *port) {
-    printf("%s:%s adding peer %s:%s\n", self.ip, self.port, ip, port);
-    printf("%s:%s right is currently %s:%s\n", self.ip, self.port, right.ip,
-           right.port);
-
     addr_info old_right;
     if (strcmp(right.ip, self.ip) == 0 && strcmp(right.port, self.port) == 0) {
         left = addr_info(ip, port);
@@ -36,31 +32,21 @@ void add_node(char *ip, char *port) {
     }
 
     right = addr_info(ip, port);
-    printf("%s:%s right is now %s:%s\n", self.ip, self.port, right.ip,
-           right.port);
 
     std::stringstream ss;
     ss << "clonepeer:" << total_peers << ":" << total_content << ":" << self.ip
        << ":" << self.port << ":" << old_right.ip << ":" << old_right.port;
     forward(ss.str().c_str());
-    printf("%s:%s told %s:%s to clone with right %s:%s\n", self.ip, self.port,
-           right.ip, right.port, old_right.ip, old_right.port);
 }
 
 void clone_node(int peers, int content, char *lip, char *lport, char *rip,
                 char *rport) {
     total_peers = ++peers;
-    printf("incremented peers to %d\n", total_peers);
     total_content = content;
 
     left = addr_info(lip, lport);
     right = addr_info(rip, rport);
 
-    printf("created %s with left %s and right %s\n", self.port, left.port,
-           right.port);
-
-    printf("sending connectnewpeer from %s:%s to %s:%s\n", self.ip, self.port,
-           right.ip, right.port);
     std::stringstream ss;
     ss << "connectnewpeer:" << left.ip << ":" << left.port << ":" << self.ip
        << ":" << self.port;
@@ -77,13 +63,9 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
         strcmp(left.port, replace_port) == 0) {
         // replace left with the new peer
         left = addr_info(ip, port);
-        printf("%s left is now %s\n", self.port, left.port);
     }
 
     ++total_peers;
-    printf("incremented peers to %d\n", total_peers);
-    printf("sending connectnewpeer from %s:%s to %s:%s\n", self.ip, self.port,
-           right.ip, right.port);
 
     std::stringstream ss;
     ss << "connectnewpeer:" << replace_ip << ":" << replace_port << ":" << ip
@@ -92,12 +74,11 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
 }
 
 void debug_node() {
-    printf("Debugging node:\n");
-    printf(" node data: %s:%s, with %d/%d content, and %d total peers\n",
-           self.ip, self.port, 0 /*TODO: my_content*/, total_content,
-           total_peers);
-    printf(" left data: %s:%s\n", left.ip, left.port);
-    printf(" right data: %s:%s\n", right.ip, right.port);
+    printf("Debug info for %s:%s:\n", self.ip, self.port);
+    printf("> storing %d/%d content across %d peers\n", 0 /*TODO: my_content*/,
+           total_content, total_peers);
+    printf("> left peer is %s:%s\n", left.ip, left.port);
+    printf("> right peer is %s:%s\n", right.ip, right.port);
 }
 
 void init_node(char *ip, char *port) {
@@ -128,7 +109,6 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
     }
 
     --total_peers;
-    printf("decremented peers to %d\n", total_peers);
 
     if (strcmp(right.ip, remove_ip) == 0 &&
         strcmp(right.port, remove_port) == 0) {

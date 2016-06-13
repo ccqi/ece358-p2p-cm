@@ -20,7 +20,6 @@
 void join(char *ip, char *port, char *args[]) {
     int8_t sockfd = -1;
     connect_to_server(&sockfd, args[1], args[2]);
-    printf("%s:%s joined %s:%s\n", ip, port, args[1], args[2]);
 
     std::stringstream ss;
     ss << "newpeer:" << ip << ":" << port;
@@ -51,7 +50,7 @@ void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
 
 int main(int argc, char *argv[]) {
     if (argc != 1 && argc != 3) {
-        printf("usage: ./peer [<address> <port>]\n");
+        fprintf(stderr, "usage: ./peer [<address> <port>]\n");
         exit(1);
     }
 
@@ -76,7 +75,6 @@ int main(int argc, char *argv[]) {
 
         char buf[SOCKET_TRANSFER_LIMIT];
         receive_from_socket(connectedsock, buf);
-        printf("received %s\n", buf);
 
         char *command = strtok(buf, ":");
         if (strcmp(command, "insert") == 0) {

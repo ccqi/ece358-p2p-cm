@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc != 1 && argc != 3) {
-        printf("usage: ./addpeer [<address> <port>]\n");
+        fprintf(stderr, "usage: ./addpeer [<address> <port>]\n");
         exit(1);
     }
 
@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
         argv[0] = (char *)"peer";
 
         if (execve("peer", argv, NULL) != 0) {
-            printf("error running peer");
+            fprintf(stderr, "error running peer");
             exit(1);
         }
     }
