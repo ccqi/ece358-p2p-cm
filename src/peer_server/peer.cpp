@@ -11,10 +11,10 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "../shared/address.h"
 #include "../shared/socket.h"
 
 #include "commands.h"
+#include "communication.h"
 #include "content.h"
 #include "nodes.h"
 #include "state.h"
