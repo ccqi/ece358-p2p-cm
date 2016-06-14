@@ -13,7 +13,7 @@ rm $TMPFILE
 
 PEER2=$(cat $TMPFILE)
 if [ "empty" == "${PEER2:-empty}" ] ; then
-    fail "${TEST}" "./addpeer ${PEER1} failed to print a port (got '${PEER2}'): see $TMPFILE"
+    fail "${TEST}" "first ./addpeer ${PEER1} failed to print a port (got '${PEER2}'): see $TMPFILE"
 fi
 rm $TMPFILE
 
@@ -21,7 +21,7 @@ rm $TMPFILE
 
 PEER3=$(cat $TMPFILE)
 if [ "empty" == "${PEER3:-empty}" ] ; then
-    fail "${TEST}" "./addpeer ${PEER2} failed to print a port (got '${PEER3}'): see $TMPFILE"
+    fail "${TEST}" "second ./addpeer ${PEER2} failed to print a port (got '${PEER3}'): see $TMPFILE"
 fi
 rm $TMPFILE
 
@@ -29,7 +29,7 @@ rm $TMPFILE
 
 PEER4=$(cat $TMPFILE)
 if [ "empty" == "${PEER4:-empty}" ] ; then
-    fail "${TEST}" "./addpeer ${PEER1} failed to print a port (got '${PEER4}'): see $TMPFILE"
+    fail "${TEST}" "third ./addpeer ${PEER1} failed to print a port (got '${PEER4}'): see $TMPFILE"
 fi
 rm $TMPFILE
 
