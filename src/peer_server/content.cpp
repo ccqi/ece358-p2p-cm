@@ -106,6 +106,10 @@ void take_content() {
 }
 
 void validate_content() {
+    if (total_content == 0) {
+        return;
+    }
+
     if (data.size() < floor()) {
         take_content();
         validate_content();
