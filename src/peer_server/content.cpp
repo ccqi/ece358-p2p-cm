@@ -52,7 +52,6 @@ uint8_t insert_content(char *value) {
         return key;
     }
 
-    // TODO: error case
     return 0;
 }
 
