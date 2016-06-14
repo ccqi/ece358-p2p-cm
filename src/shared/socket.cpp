@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #include "socket.h"
 
@@ -43,13 +44,6 @@ void create_server(int8_t *sockfd, void *server, socklen_t *alen) {
         exit(1);
     }
 
-    int opt = 1;
-    if (setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-                   sizeof(opt)) < 0) {
-        perror("could not set socket options");
-        exit(1);
-    }
-
     if (mybind(*sockfd, (struct sockaddr_in *)server) < 0) {
         perror("could not bind to socket");
         exit(1);
@@ -62,7 +56,7 @@ void create_server(int8_t *sockfd, void *server, socklen_t *alen) {
     }
 }
 
-void connect_to_server(int8_t *sockfd, char *ip, char *port) {
+void connect_to_socket(int8_t *sockfd, char *ip, char *port) {
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     inet_aton(ip, &(server.sin_addr));
@@ -95,9 +89,9 @@ void connect_to_server(int8_t *sockfd, char *ip, char *port) {
     }
 }
 
-void disconnect_from_server(int8_t sockfd) {
-    if (shutdown(sockfd, SHUT_RDWR) < 0) {
-        perror("error closing connection");
+void destroy_socket(int8_t sockfd) {
+    if (close(sockfd) < 0) {
+        perror("error destroying socket");
         exit(1);
     }
 }

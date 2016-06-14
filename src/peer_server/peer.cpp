@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <unistd.h>
 
 #include "../shared/socket.h"
 
@@ -19,13 +18,13 @@
 
 void join(char *ip, char *port, char *args[]) {
     int8_t sockfd = -1;
-    connect_to_server(&sockfd, args[1], args[2]);
+    connect_to_socket(&sockfd, args[1], args[2]);
 
     std::stringstream ss;
     ss << "addpeer:" << ip << ":" << port;
     send_to_socket(sockfd, ss.str().c_str());
 
-    disconnect_from_server(sockfd);
+    destroy_socket(sockfd);
 }
 
 void init(int8_t *sockfd, socklen_t *alen, bool join_network, char *args[]) {
@@ -81,11 +80,11 @@ int main(int argc, char *argv[]) {
         receive_from_socket(connectedsock, buf);
 
         respond(strtok(buf, ":"), connectedsock);
+
+        destroy_socket(connectedsock);
     }
 
-    if (close(sockfd) < 0) {
-        perror("error closing socket as child");
-    }
+    destroy_socket(sockfd);
 
     return 0;
 }

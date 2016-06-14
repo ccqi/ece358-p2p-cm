@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     }
 
     int8_t sockfd = -1;
-    connect_to_server(&sockfd, argv[1], argv[2]);
+    connect_to_socket(&sockfd, argv[1], argv[2]);
 
     std::stringstream ss;
     ss << "lookupcontent:" << argv[3] << ":" << argv[1] << ":" << argv[2];
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     receive_from_socket(sockfd, buf);
     printf("%s\n", buf);
 
-    disconnect_from_server(sockfd);
+    destroy_socket(sockfd);
 
     return 0;
 }

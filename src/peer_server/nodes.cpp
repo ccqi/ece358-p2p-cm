@@ -36,7 +36,7 @@ void clone_node(int peers, int content, char *lip, char *lport, char *rip,
        << ":" << self.port;
     forward(ss.str().c_str(), self.ip, self.port);
 
-    if (data.size() < floor()) {
+    while (data.size() < floor()) {
         take_content();
     }
 }
@@ -78,7 +78,6 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
 
     if (strcmp(right.ip, remove_ip) == 0 &&
         strcmp(right.port, remove_port) == 0) {
-
         std::stringstream ssdie;
         ssdie << "die";
         forward(ssdie.str().c_str());

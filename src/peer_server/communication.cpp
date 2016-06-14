@@ -12,17 +12,17 @@
 
 void forward(const char *message) {
     int8_t sockfd = -1;
-    connect_to_server(&sockfd, right.ip, right.port);
+    connect_to_socket(&sockfd, right.ip, right.port);
     send_to_socket(sockfd, message);
-    disconnect_from_server(sockfd);
+    destroy_socket(sockfd);
 }
 
 void forward(const char *message, char *response) {
     int8_t sockfd = -1;
-    connect_to_server(&sockfd, right.ip, right.port);
+    connect_to_socket(&sockfd, right.ip, right.port);
     send_to_socket(sockfd, message);
     receive_from_socket(sockfd, response);
-    disconnect_from_server(sockfd);
+    destroy_socket(sockfd);
 }
 
 void forward(const char *message, const char *origin_ip,

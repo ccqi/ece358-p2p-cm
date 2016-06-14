@@ -10,9 +10,9 @@
 
 void create_server(int8_t *sockfd, void *server, socklen_t *alen);
 
-void connect_to_server(int8_t *sockfd, char *ip, char *port);
+void connect_to_socket(int8_t *sockfd, char *ip, char *port);
 
-void disconnect_from_server(int8_t sockfd);
+void destroy_socket(int8_t sockfd);
 
 void send_to_socket(int8_t sockfd, const char *command);
 
