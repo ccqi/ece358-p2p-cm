@@ -33,21 +33,33 @@ void addpeer() {
     add_node(ip, port);
 }
 
+void allkeys(int8_t connectedsock) {
+    std::stringstream ss;
+
+    for (auto entry : data) {
+        char *key = new char[6];
+        sprintf(key, "%d", entry.first);
+        ss << key << ",";
+    }
+    ss << "0";
+    send_to_socket(connectedsock, ss.str().c_str());
+}
+
 void debug() {
-    printf("Debug info for %s:%s:\n", self.ip, self.port);
-    printf("> storing %zu/%d content across %d peers\n", data.size(),
+    fprintf(stderr, "Debug info for %s:%s:\n", self.ip, self.port);
+    fprintf(stderr, "> storing %zu/%d content across %d peers\n", data.size(),
            total_content, total_peers);
-    printf("> floor and ceiling are %d and %d\n", floor(), ceiling());
-    printf("> left peer is %s:%s\n", left.ip, left.port);
-    printf("> right peer is %s:%s\n", right.ip, right.port);
+    fprintf(stderr, "> floor and ceiling are %d and %d\n", floor(), ceiling());
+    fprintf(stderr, "> left peer is %s:%s\n", left.ip, left.port);
+    fprintf(stderr, "> right peer is %s:%s\n", right.ip, right.port);
     if (data.empty()) {
-        printf("> no content\n");
+        fprintf(stderr, "> no content\n");
         return;
     }
 
-    printf("> content is:\n");
+    fprintf(stderr, "> content is:\n");
     for (auto entry : data) {
-        printf(">>> %d:%s\n", entry.first, entry.second);
+        fprintf(stderr, ">>> %d:%s\n", entry.first, entry.second);
     }
 }
 
@@ -159,6 +171,9 @@ void respond(const char *command, int8_t connectedsock) {
         return;
     } else if (strcmp(command, "addpeer") == 0) {
         addpeer();
+        return;
+    } else if (strcmp(command, "allkeys") == 0) {
+        allkeys(connectedsock);
         return;
     } else if (strcmp(command, "debug") == 0) {
         debug();

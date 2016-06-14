@@ -14,11 +14,12 @@ build/%.o: src/*/%.cpp
 
 
 COMMANDS := addcontent addpeer lookupcontent removecontent removepeer
-BINARIES := $(COMMANDS) debug peer
+BINARIES := $(COMMANDS) allkeys debug peer
 all: $(BINARIES)
 
 addcontent: build/addcontent.o build/socket.o
 addpeer: build/addpeer.o
+allkeys: build/allkeys.o  build/socket.o
 debug: build/debug.o build/socket.o
 lookupcontent: build/lookupcontent.o build/socket.o
 peer: build/peer.o build/commands.o build/communication.o build/content.o build/nodes.o build/socket.o build/state.o
