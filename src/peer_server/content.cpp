@@ -1,17 +1,27 @@
 #include <sstream>
 #include <stdint.h>
+#include <utility>
+
+#include "../shared/socket.h"
 
 #include "communication.h"
 #include "content.h"
 #include "state.h"
 
 uint8_t insert_content(char *value) {
-    char *cvalue = strdup(value);
+    // TODO: randomize
+    for (uint8_t key = 1; key < INT8_MAX; ++key) {
+        if (strcmp(lookup_content(key, self.ip, self.port), "-") != 0) {
+            continue;
+        }
 
-    // TODO: find unused key
-    uint8_t key = 123;
-    data.insert(std::make_pair(key, cvalue));
-    return key;
+        char *cvalue = strdup(value);
+        data.insert(std::make_pair(key, cvalue));
+        return key;
+    }
+
+    // TODO: error case
+    return 0;
 }
 
 char *lookup_content(uint8_t key, char *ip, char *port) {
@@ -19,7 +29,7 @@ char *lookup_content(uint8_t key, char *ip, char *port) {
         return data.at(key);
     }
 
-    char *response = NULL;
+    char *response = new char[SOCKET_TRANSFER_LIMIT];
 
     std::stringstream ss;
     ss << "lookupcontent:" << key << ":" << ip << ":" << port;

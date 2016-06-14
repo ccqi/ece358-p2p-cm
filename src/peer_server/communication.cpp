@@ -39,6 +39,7 @@ void forward(const char *message, char *response, const char *origin_ip,
              const char *origin_port) {
     if (strcmp(right.ip, origin_ip) == 0 &&
         strcmp(right.port, origin_port) == 0) {
+        strncpy(response, "-", 2);
         return;
     }
 

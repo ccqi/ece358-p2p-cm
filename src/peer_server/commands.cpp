@@ -49,14 +49,18 @@ void debug() {
 
 void lookupcontent(int8_t connectedsock) {
     uint8_t key = atoi(strtok(NULL, ":"));
-    char *value = lookup_content(key, self.ip, self.port);
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+    char *value = lookup_content(key, ip, port);
 
     send_to_socket(connectedsock, value);
 }
 
 void removecontent() {
     uint8_t key = atoi(strtok(NULL, ":"));
-    remove_content(key, self.ip, self.port);
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+    remove_content(key, ip, port);
 }
 
 void removepeer() {
