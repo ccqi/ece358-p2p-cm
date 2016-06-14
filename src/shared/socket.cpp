@@ -72,7 +72,8 @@ void connect_to_socket(int8_t *sockfd, char *ip, char *port) {
     client.sin_family = AF_INET;
     client.sin_addr.s_addr = htonl(INADDR_ANY);
     client.sin_port = 0;
-    if (mybind(*sockfd, (struct sockaddr_in *)&client) < 0) {
+    if (bind(*sockfd, (const struct sockaddr *)&client,
+             sizeof(struct sockaddr)) < 0) {
         perror("could not bind to socket");
         exit(1);
     }
