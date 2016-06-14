@@ -10,10 +10,7 @@
 
 void decrement_content(char *ip, char *port) {
     --total_content;
-
-    while (data.size() > ceiling()) {
-        give_content();
-    }
+    validate_content();
 
     std::stringstream ss;
     ss << "decrementcontent:" << ip << ":" << port;
@@ -34,10 +31,7 @@ void give_content() {
 
 void increment_content(char *ip, char *port) {
     ++total_content;
-
-    while (data.size() < floor()) {
-        take_content();
-    }
+    validate_content();
 
     std::stringstream ss;
     ss << "incrementcontent:" << ip << ":" << port;
@@ -53,12 +47,7 @@ uint8_t insert_content(char *value) {
 
         char *cvalue = strdup(value);
         data.insert(std::make_pair(key, cvalue));
-
         increment_content(self.ip, self.port);
-
-        if (data.size() > ceiling()) {
-            give_content();
-        }
 
         return key;
     }
@@ -111,4 +100,18 @@ void take_content() {
     uint8_t key = atoi(strtok(response, ":"));
     char *value = strdup(strtok(NULL, ":"));
     data.insert(std::make_pair(key, value));
+}
+
+void validate_content() {
+    if (data.size() < floor()) {
+        take_content();
+        validate_content();
+        return;
+    }
+
+    if (data.size() > ceiling()) {
+        give_content();
+        validate_content();
+        return;
+    }
 }

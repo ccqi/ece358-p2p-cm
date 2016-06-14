@@ -1,6 +1,5 @@
 #include <sstream>
 
-#include "commands.h"
 #include "communication.h"
 #include "content.h"
 #include "nodes.h"
@@ -36,9 +35,7 @@ void clone_node(int peers, int content, char *lip, char *lport, char *rip,
        << ":" << self.port;
     forward(ss.str().c_str(), self.ip, self.port);
 
-    while (data.size() < floor()) {
-        take_content();
-    }
+    validate_content();
 }
 
 void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
@@ -54,6 +51,8 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
     ss << "connectnewpeer:" << replace_ip << ":" << replace_port << ":" << ip
        << ":" << port;
     forward(ss.str().c_str(), ip, port);
+
+    validate_content();
 }
 
 void remove_self() {
@@ -72,9 +71,7 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
         left = addr_info(lip, lport);
     }
 
-    while (data.size() < floor()) {
-        take_content();
-    }
+    validate_content();
 
     if (strcmp(right.ip, remove_ip) == 0 &&
         strcmp(right.port, remove_port) == 0) {

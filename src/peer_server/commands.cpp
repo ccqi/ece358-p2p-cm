@@ -109,9 +109,7 @@ void givecontent() {
 
     data.insert(std::make_pair(key, value));
 
-    if (data.size() > ceiling()) {
-        give_content();
-    }
+    validate_content();
 }
 
 void incrementcontent() {
@@ -143,9 +141,7 @@ void takecontent(int8_t connectedsock) {
     ss << key << ":" << content.second;
     send_to_socket(connectedsock, ss.str().c_str());
 
-    if (data.size() < floor()) {
-        take_content();
-    }
+    validate_content();
 }
 
 /*
