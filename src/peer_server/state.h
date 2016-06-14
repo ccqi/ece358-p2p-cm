@@ -24,5 +24,5 @@ extern int total_content;
 
 extern std::unordered_map<uint8_t, char *> data;
 
-int ceiling();
-int floor();
+uint16_t ceiling();
+uint16_t floor();

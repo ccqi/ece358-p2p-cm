@@ -1,6 +1,8 @@
 #include <sstream>
 
+#include "commands.h"
 #include "communication.h"
+#include "content.h"
 #include "nodes.h"
 #include "state.h"
 
@@ -33,6 +35,10 @@ void clone_node(int peers, int content, char *lip, char *lport, char *rip,
     ss << "connectnewpeer:" << left.ip << ":" << left.port << ":" << self.ip
        << ":" << self.port;
     forward(ss.str().c_str(), self.ip, self.port);
+
+    if (data.size() < floor()) {
+        take_content();
+    }
 }
 
 void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
@@ -61,13 +67,23 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
                  char *rip, char *rport) {
     --total_peers;
 
-    if (strcmp(right.ip, remove_ip) == 0 &&
-        strcmp(right.port, remove_port) == 0) {
-        right = addr_info(rip, rport);
-    }
     if (strcmp(left.ip, remove_ip) == 0 &&
         strcmp(left.port, remove_port) == 0) {
         left = addr_info(lip, lport);
+    }
+
+    while (data.size() < floor()) {
+        take_content();
+    }
+
+    if (strcmp(right.ip, remove_ip) == 0 &&
+        strcmp(right.port, remove_port) == 0) {
+
+        std::stringstream ssdie;
+        ssdie << "die";
+        forward(ssdie.str().c_str());
+
+        right = addr_info(rip, rport);
     }
 
     std::stringstream ss;

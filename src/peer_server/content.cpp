@@ -11,13 +11,33 @@
 void decrement_content(char *ip, char *port) {
     --total_content;
 
+    while (data.size() > ceiling()) {
+        give_content();
+    }
+
     std::stringstream ss;
     ss << "decrementcontent:" << ip << ":" << port;
     forward(ss.str().c_str(), ip, port);
 }
 
+void give_content() {
+    std::pair<uint8_t, char *> content = *data.begin();
+    data.erase(content.first);
+
+    char *key = new char[sizeof(content.first) + 1];
+    sprintf(key, "%d", content.first);
+
+    std::stringstream ss;
+    ss << "givecontent:" << key << ":" << content.second;
+    forward(ss.str().c_str());
+}
+
 void increment_content(char *ip, char *port) {
     ++total_content;
+
+    while (data.size() < floor()) {
+        take_content();
+    }
 
     std::stringstream ss;
     ss << "incrementcontent:" << ip << ":" << port;
@@ -50,8 +70,11 @@ char *lookup_content(uint8_t key, char *ip, char *port) {
 
     char *response = new char[SOCKET_TRANSFER_LIMIT];
 
+    char *ckey = new char[sizeof(key) + 1];
+    sprintf(ckey, "%d", key);
+
     std::stringstream ss;
-    ss << "lookupcontent:" << key << ":" << ip << ":" << port;
+    ss << "lookupcontent:" << ckey << ":" << ip << ":" << port;
     forward(ss.str().c_str(), response, ip, port);
 
     return response;
@@ -66,7 +89,22 @@ void remove_content(uint8_t key, char *ip, char *port) {
         return;
     }
 
+    char *ckey = new char[sizeof(key) + 1];
+    sprintf(ckey, "%d", key);
+
     std::stringstream ss;
-    ss << "removecontent:" << key << ":" << ip << ":" << port;
+    ss << "removecontent:" << ckey << ":" << ip << ":" << port;
     forward(ss.str().c_str(), ip, port);
+}
+
+void take_content() {
+    char *response = new char[SOCKET_TRANSFER_LIMIT];
+
+    std::stringstream ss;
+    ss << "takecontent";
+    forward(ss.str().c_str(), response);
+
+    uint8_t key = atoi(strtok(response, ":"));
+    char *value = strdup(strtok(NULL, ":"));
+    data.insert(std::make_pair(key, value));
 }

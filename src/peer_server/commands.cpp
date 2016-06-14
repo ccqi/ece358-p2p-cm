@@ -1,7 +1,10 @@
+#include <sstream>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <utility>
 
 #include "../shared/socket.h"
 
@@ -66,6 +69,8 @@ void removecontent() {
 
 void removepeer() {
     remove_self();
+
+    total_content = 0; // allow peers to take all data
 }
 
 /*
@@ -98,6 +103,13 @@ void decrementcontent() {
     decrement_content(ip, port);
 }
 
+void givecontent() {
+    uint8_t key = atoi(strtok(NULL, ":"));
+    char *value = strtok(NULL, ":");
+
+    data.insert(std::make_pair(key, value));
+}
+
 void incrementcontent() {
     char *ip = strtok(NULL, ":");
     char *port = strtok(NULL, ":");
@@ -114,6 +126,18 @@ void removenode() {
     char *rport = strtok(NULL, ":");
 
     remove_node(remove_ip, remove_port, lip, lport, rip, rport);
+}
+
+void takecontent(int8_t connectedsock) {
+    std::pair<uint8_t, char *> content = *data.begin();
+    data.erase(content.first);
+
+    char *key = new char[sizeof(content.first) + 1];
+    sprintf(key, "%d", content.first);
+
+    std::stringstream ss;
+    ss << key << ":" << content.second;
+    send_to_socket(connectedsock, ss.str().c_str());
 }
 
 /*
@@ -138,7 +162,6 @@ void respond(const char *command, int8_t connectedsock) {
         return;
     } else if (strcmp(command, "removepeer") == 0) {
         removepeer();
-        exit(0); // shut down on succesful removal
         return;
     }
 
@@ -152,12 +175,22 @@ void respond(const char *command, int8_t connectedsock) {
     } else if (strcmp(command, "decrementcontent") == 0) {
         decrementcontent();
         return;
+    } else if (strcmp(command, "givecontent") == 0) {
+        givecontent();
+        return;
     } else if (strcmp(command, "incrementcontent") == 0) {
         incrementcontent();
         return;
     } else if (strcmp(command, "removenode") == 0) {
         removenode();
         return;
+    } else if (strcmp(command, "takecontent") == 0) {
+        takecontent(connectedsock);
+        return;
+    }
+
+    if (strcmp(command, "die") == 0) {
+        exit(0); // shut down gracefully
     }
 
     // TODO: error handling
