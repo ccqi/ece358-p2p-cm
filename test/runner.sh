@@ -29,6 +29,6 @@ make -s clean ${EXECS[*]}
 
 echo
 for file in "${TEST_DIR}/test_"*".sh"; do
-    pkill -f peer
+    pkill -u `whoami` -f peer
     . $file
 done
