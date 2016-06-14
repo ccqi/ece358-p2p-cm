@@ -48,7 +48,7 @@ void allkeys(int8_t connectedsock) {
 void debug() {
     fprintf(stderr, "Debug info for %s:%s:\n", self.ip, self.port);
     fprintf(stderr, "> storing %zu/%d content across %d peers\n", data.size(),
-           total_content, total_peers);
+            total_content, total_peers);
     fprintf(stderr, "> floor and ceiling are %d and %d\n", floor(), ceiling());
     fprintf(stderr, "> left peer is %s:%s\n", left.ip, left.port);
     fprintf(stderr, "> right peer is %s:%s\n", right.ip, right.port);
