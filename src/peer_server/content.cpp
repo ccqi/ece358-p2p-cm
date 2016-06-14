@@ -39,7 +39,6 @@ void increment_content(char *ip, char *port) {
 }
 
 uint8_t insert_content(char *value) {
-    // TODO: randomize
     for (uint8_t key = 1; key < INT8_MAX; ++key) {
         if (strcmp(lookup_content(key, self.ip, self.port), "-") != 0) {
             continue;
