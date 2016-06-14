@@ -8,6 +8,22 @@
 #include "content.h"
 #include "state.h"
 
+void decrement_content(char *ip, char *port) {
+    --total_content;
+
+    std::stringstream ss;
+    ss << "decrementcontent:" << ip << ":" << port;
+    forward(ss.str().c_str(), ip, port);
+}
+
+void increment_content(char *ip, char *port) {
+    ++total_content;
+
+    std::stringstream ss;
+    ss << "incrementcontent:" << ip << ":" << port;
+    forward(ss.str().c_str(), ip, port);
+}
+
 uint8_t insert_content(char *value) {
     // TODO: randomize
     for (uint8_t key = 1; key < INT8_MAX; ++key) {
@@ -17,6 +33,9 @@ uint8_t insert_content(char *value) {
 
         char *cvalue = strdup(value);
         data.insert(std::make_pair(key, cvalue));
+
+        increment_content(self.ip, self.port);
+
         return key;
     }
 
@@ -41,6 +60,9 @@ char *lookup_content(uint8_t key, char *ip, char *port) {
 void remove_content(uint8_t key, char *ip, char *port) {
     if (data.find(key) != data.end()) {
         data.erase(key);
+
+        decrement_content(self.ip, self.port);
+
         return;
     }
 

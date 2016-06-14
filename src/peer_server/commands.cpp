@@ -90,6 +90,20 @@ void connectnewpeer() {
     connect_node(replace_ip, replace_port, ip, port);
 }
 
+void decrementcontent() {
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+
+    decrement_content(ip, port);
+}
+
+void incrementcontent() {
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+
+    increment_content(ip, port);
+}
+
 void removenode() {
     char *remove_ip = strtok(NULL, ":");
     char *remove_port = strtok(NULL, ":");
@@ -133,6 +147,12 @@ void respond(const char *command, int8_t connectedsock) {
         return;
     } else if (strcmp(command, "connectnewpeer") == 0) {
         connectnewpeer();
+        return;
+    } else if (strcmp(command, "decrementcontent") == 0) {
+        decrementcontent();
+        return;
+    } else if (strcmp(command, "incrementcontent") == 0) {
+        incrementcontent();
         return;
     } else if (strcmp(command, "removenode") == 0) {
         removenode();
