@@ -66,6 +66,11 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
                  char *rip, char *rport) {
     --total_peers;
 
+    std::stringstream ss;
+    ss << "removenode:" << remove_ip << ":" << remove_port << ":" << lip << ":"
+       << lport << ":" << rip << ":" << rport;
+    forward(ss.str().c_str(), remove_ip, remove_port);
+
     if (strcmp(left.ip, remove_ip) == 0 &&
         strcmp(left.port, remove_port) == 0) {
         left = addr_info(lip, lport);
@@ -81,8 +86,4 @@ void remove_node(char *remove_ip, char *remove_port, char *lip, char *lport,
 
         right = addr_info(rip, rport);
     }
-
-    std::stringstream ss;
-    ss << "removenode:" << remove_ip << ":" << remove_port;
-    forward(ss.str().c_str(), rip, rport);
 }
