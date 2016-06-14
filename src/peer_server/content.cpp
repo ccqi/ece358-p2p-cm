@@ -56,6 +56,10 @@ uint8_t insert_content(char *value) {
 
         increment_content(self.ip, self.port);
 
+        if (data.size() > ceiling()) {
+            give_content();
+        }
+
         return key;
     }
 

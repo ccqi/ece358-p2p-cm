@@ -108,6 +108,10 @@ void givecontent() {
     char *value = strtok(NULL, ":");
 
     data.insert(std::make_pair(key, value));
+
+    if (data.size() > ceiling()) {
+        give_content();
+    }
 }
 
 void incrementcontent() {
@@ -138,6 +142,10 @@ void takecontent(int8_t connectedsock) {
     std::stringstream ss;
     ss << key << ":" << content.second;
     send_to_socket(connectedsock, ss.str().c_str());
+
+    if (data.size() < floor()) {
+        take_content();
+    }
 }
 
 /*
