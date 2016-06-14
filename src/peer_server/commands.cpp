@@ -32,11 +32,12 @@ void addpeer() {
 
 void debug() {
     printf("Debug info for %s:%s:\n", self.ip, self.port);
-    printf("> storing %lu/%d content across %d peers\n", data.size(),
+    printf("> storing %zu/%d content across %d peers\n", data.size(),
            total_content, total_peers);
+    printf("> floor and ceiling are %d and %d\n", floor(), ceiling());
     printf("> left peer is %s:%s\n", left.ip, left.port);
     printf("> right peer is %s:%s\n", right.ip, right.port);
-    if (data.size() == 0) {
+    if (data.empty()) {
         printf("> no content\n");
         return;
     }
