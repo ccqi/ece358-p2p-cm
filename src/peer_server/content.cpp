@@ -14,8 +14,18 @@ uint8_t insert_content(char *value) {
     return key;
 }
 
-char *read_content(uint8_t key) {
-    return data.at(key);
+char *lookup_content(uint8_t key, char *ip, char *port) {
+    if (data.find(key) != data.end()) {
+        return data.at(key);
+    }
+
+    char *response = NULL;
+
+    std::stringstream ss;
+    ss << "lookupcontent:" << key << ":" << ip << ":" << port;
+    forward(ss.str().c_str(), response, ip, port);
+
+    return response;
 }
 
 void remove_content(uint8_t key, char *ip, char *port) {

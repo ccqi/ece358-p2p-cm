@@ -48,9 +48,8 @@ void debug() {
 }
 
 void lookupcontent(int8_t connectedsock) {
-    char *key = strtok(NULL, ":");
-
-    char *value = read_content(atoi(key));
+    uint8_t key = atoi(strtok(NULL, ":"));
+    char *value = lookup_content(key, self.ip, self.port);
 
     send_to_socket(connectedsock, value);
 }

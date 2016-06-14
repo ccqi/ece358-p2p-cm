@@ -17,6 +17,14 @@ void forward(const char *message) {
     disconnect_from_server(sockfd);
 }
 
+void forward(const char *message, char *response) {
+    int8_t sockfd = -1;
+    connect_to_server(&sockfd, right.ip, right.port);
+    send_to_socket(sockfd, message);
+    receive_from_socket(sockfd, response);
+    disconnect_from_server(sockfd);
+}
+
 void forward(const char *message, const char *origin_ip,
              const char *origin_port) {
     if (strcmp(right.ip, origin_ip) == 0 &&
@@ -25,6 +33,16 @@ void forward(const char *message, const char *origin_ip,
     }
 
     forward(message);
+}
+
+void forward(const char *message, char *response, const char *origin_ip,
+             const char *origin_port) {
+    if (strcmp(right.ip, origin_ip) == 0 &&
+        strcmp(right.port, origin_port) == 0) {
+        return;
+    }
+
+    forward(message, response);
 }
 
 char *select_ip() {
