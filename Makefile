@@ -35,7 +35,7 @@ test: zip
 
 zip: clean a1-358s16.zip
 a1-358s16.zip: src README Makefile
-	zip -r a1-358s16.zip build src README Makefile
+	zip -q -r a1-358s16.zip build src README Makefile
 
 
 clean:
