@@ -110,7 +110,7 @@ void decrementcontent() {
 
 void givecontent() {
     uint8_t key = atoi(strtok(NULL, ":"));
-    char *value = strtok(NULL, ":");
+    char *value = strdup(strtok(NULL, ":"));
 
     data.insert(std::make_pair(key, value));
 
