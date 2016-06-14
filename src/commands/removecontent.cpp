@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../shared/socket.h"
 
@@ -18,7 +19,16 @@ int main(int argc, char *argv[]) {
     ss << "removecontent:" << argv[3] << ":" << argv[1] << ":" << argv[2];
     send_to_socket(sockfd, ss.str().c_str());
 
-    destroy_socket(sockfd);
+    char buf[SOCKET_TRANSFER_LIMIT];
+    receive_from_socket(sockfd, buf);
 
+    if (strcmp(buf, "-") == 0) {
+        fprintf(stderr, "Error: no such content\n");
+        destroy_socket(sockfd);
+        return 1;
+    }
+
+    // printf("%s\n", buf); // should be "ok"
+    destroy_socket(sockfd);
     return 0;
 }

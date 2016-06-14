@@ -73,21 +73,25 @@ char *lookup_content(uint8_t key, char *ip, char *port) {
     return response;
 }
 
-void remove_content(uint8_t key, char *ip, char *port) {
+char *remove_content(uint8_t key, char *ip, char *port) {
     if (data.find(key) != data.end()) {
         data.erase(key);
 
         decrement_content(self.ip, self.port);
 
-        return;
+        return (char *)"ok";
     }
+
+    char *response = new char[SOCKET_TRANSFER_LIMIT];
 
     char *ckey = new char[sizeof(key) + 1];
     sprintf(ckey, "%d", key);
 
     std::stringstream ss;
     ss << "removecontent:" << ckey << ":" << ip << ":" << port;
-    forward(ss.str().c_str(), ip, port);
+    forward(ss.str().c_str(), response, ip, port);
+
+    return response;
 }
 
 void take_content() {

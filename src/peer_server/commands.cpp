@@ -60,17 +60,22 @@ void lookupcontent(int8_t connectedsock) {
     send_to_socket(connectedsock, value);
 }
 
-void removecontent() {
+void removecontent(int8_t connectedsock) {
     uint8_t key = atoi(strtok(NULL, ":"));
     char *ip = strtok(NULL, ":");
     char *port = strtok(NULL, ":");
-    remove_content(key, ip, port);
+    char *response = remove_content(key, ip, port);
+
+    send_to_socket(connectedsock, response);
 }
 
 void removepeer() {
     remove_self();
+    if (total_peers == 1) {
+        exit(0); // kill self if no one else can
+    }
 
-    total_content = 0; // allow peers to take all data
+    total_content = 0; // allow peers to take all data, will be killed later
 }
 
 /*
@@ -162,7 +167,7 @@ void respond(const char *command, int8_t connectedsock) {
         lookupcontent(connectedsock);
         return;
     } else if (strcmp(command, "removecontent") == 0) {
-        removecontent();
+        removecontent(connectedsock);
         return;
     } else if (strcmp(command, "removepeer") == 0) {
         removepeer();

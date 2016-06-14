@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,7 +85,11 @@ void connect_to_socket(int8_t *sockfd, char *ip, char *port) {
 
     if (connect(*sockfd, (struct sockaddr *)&server,
                 sizeof(struct sockaddr_in)) < 0) {
-        perror("could not connect to server");
+        if (errno == ECONNREFUSED) {
+            fprintf(stderr, "Error: no such peer\n");
+        } else {
+            perror("could not connect to server");
+        }
         exit(1);
     }
 }
