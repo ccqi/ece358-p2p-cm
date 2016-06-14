@@ -14,6 +14,10 @@ uint8_t insert_content(char *value) {
     return key;
 }
 
+char *read_content(uint8_t key) {
+    return data.at(key);
+}
+
 void remove_content(uint8_t key, char *ip, char *port) {
     if (data.find(key) != data.end()) {
         data.erase(key);
@@ -23,8 +27,4 @@ void remove_content(uint8_t key, char *ip, char *port) {
     std::stringstream ss;
     ss << "removecontent:" << key << ":" << ip << ":" << port;
     forward(ss.str().c_str(), ip, port);
-}
-
-char *read_content(uint8_t key) {
-    return data.at(key);
 }
