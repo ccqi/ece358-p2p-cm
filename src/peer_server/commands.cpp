@@ -1,7 +1,10 @@
+#include <sstream>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <utility>
 
 #include "../shared/socket.h"
 
@@ -32,11 +35,12 @@ void addpeer() {
 
 void debug() {
     printf("Debug info for %s:%s:\n", self.ip, self.port);
-    printf("> storing %lu/%d content across %d peers\n", data.size(),
+    printf("> storing %zu/%d content across %d peers\n", data.size(),
            total_content, total_peers);
+    printf("> floor and ceiling are %d and %d\n", floor(), ceiling());
     printf("> left peer is %s:%s\n", left.ip, left.port);
     printf("> right peer is %s:%s\n", right.ip, right.port);
-    if (data.size() == 0) {
+    if (data.empty()) {
         printf("> no content\n");
         return;
     }
@@ -48,20 +52,25 @@ void debug() {
 }
 
 void lookupcontent(int8_t connectedsock) {
-    char *key = strtok(NULL, ":");
-
-    char *value = read_content(atoi(key));
+    uint8_t key = atoi(strtok(NULL, ":"));
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+    char *value = lookup_content(key, ip, port);
 
     send_to_socket(connectedsock, value);
 }
 
 void removecontent() {
     uint8_t key = atoi(strtok(NULL, ":"));
-    remove_content(key, self.ip, self.port);
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+    remove_content(key, ip, port);
 }
 
 void removepeer() {
     remove_self();
+
+    total_content = 0; // allow peers to take all data
 }
 
 /*
@@ -87,6 +96,31 @@ void connectnewpeer() {
     connect_node(replace_ip, replace_port, ip, port);
 }
 
+void decrementcontent() {
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+
+    decrement_content(ip, port);
+}
+
+void givecontent() {
+    uint8_t key = atoi(strtok(NULL, ":"));
+    char *value = strtok(NULL, ":");
+
+    data.insert(std::make_pair(key, value));
+
+    if (data.size() > ceiling()) {
+        give_content();
+    }
+}
+
+void incrementcontent() {
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+
+    increment_content(ip, port);
+}
+
 void removenode() {
     char *remove_ip = strtok(NULL, ":");
     char *remove_port = strtok(NULL, ":");
@@ -96,6 +130,22 @@ void removenode() {
     char *rport = strtok(NULL, ":");
 
     remove_node(remove_ip, remove_port, lip, lport, rip, rport);
+}
+
+void takecontent(int8_t connectedsock) {
+    std::pair<uint8_t, char *> content = *data.begin();
+    data.erase(content.first);
+
+    char *key = new char[sizeof(content.first) + 1];
+    sprintf(key, "%d", content.first);
+
+    std::stringstream ss;
+    ss << key << ":" << content.second;
+    send_to_socket(connectedsock, ss.str().c_str());
+
+    if (data.size() < floor()) {
+        take_content();
+    }
 }
 
 /*
@@ -120,7 +170,6 @@ void respond(const char *command, int8_t connectedsock) {
         return;
     } else if (strcmp(command, "removepeer") == 0) {
         removepeer();
-        exit(0); // shut down on succesful removal
         return;
     }
 
@@ -131,9 +180,25 @@ void respond(const char *command, int8_t connectedsock) {
     } else if (strcmp(command, "connectnewpeer") == 0) {
         connectnewpeer();
         return;
+    } else if (strcmp(command, "decrementcontent") == 0) {
+        decrementcontent();
+        return;
+    } else if (strcmp(command, "givecontent") == 0) {
+        givecontent();
+        return;
+    } else if (strcmp(command, "incrementcontent") == 0) {
+        incrementcontent();
+        return;
     } else if (strcmp(command, "removenode") == 0) {
         removenode();
         return;
+    } else if (strcmp(command, "takecontent") == 0) {
+        takecontent(connectedsock);
+        return;
+    }
+
+    if (strcmp(command, "die") == 0) {
+        exit(0); // shut down gracefully
     }
 
     // TODO: error handling

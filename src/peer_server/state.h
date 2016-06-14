@@ -23,3 +23,6 @@ extern int total_peers;
 extern int total_content;
 
 extern std::unordered_map<uint8_t, char *> data;
+
+uint16_t ceiling();
+uint16_t floor();
