@@ -56,7 +56,8 @@ void lookupcontent(int8_t connectedsock) {
 }
 
 void removecontent() {
-    delete_content(atoi(strtok(NULL, ":")));
+    uint8_t key = atoi(strtok(NULL, ":"));
+    remove_content(key, self.ip, self.port);
 }
 
 void removepeer() {
