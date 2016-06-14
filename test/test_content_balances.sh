@@ -21,11 +21,11 @@ rm $TMPFILE
 
 C1VALUE=$(./lookupcontent $PEER2 $C1KEY)
 if [ "hello world" != "$C1VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C1VALUE'"
+    fail "${TEST}" "C1 ./lookupcontent returned '$C1VALUE'"
 fi
 C2VALUE=$(./lookupcontent $PEER2 $C2KEY)
 if [ "hello again world" != "$C2VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C2VALUE'"
+    fail "${TEST}" "C2 ./lookupcontent returned '$C2VALUE'"
 fi
 
 ./removecontent $PEER2 $C1KEY

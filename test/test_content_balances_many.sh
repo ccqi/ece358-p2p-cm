@@ -28,27 +28,27 @@ C6KEY=$(./addcontent $PEER1 'f')
 
 C1VALUE=$(./lookupcontent $PEER1 $C1KEY)
 if [ "a" != "$C1VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C1VALUE'"
+    fail "${TEST}" "./C1 lookupcontent returned '$C1VALUE'"
 fi
 C2VALUE=$(./lookupcontent $PEER1 $C2KEY)
 if [ "b" != "$C2VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C2VALUE'"
+    fail "${TEST}" "./C2 lookupcontent returned '$C2VALUE'"
 fi
 C3VALUE=$(./lookupcontent $PEER1 $C3KEY)
 if [ "c" != "$C3VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C3VALUE'"
+    fail "${TEST}" "./C3 lookupcontent returned '$C3VALUE'"
 fi
 C4VALUE=$(./lookupcontent $PEER1 $C4KEY)
 if [ "d" != "$C4VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C4VALUE'"
+    fail "${TEST}" "./C4 lookupcontent returned '$C4VALUE'"
 fi
 C5VALUE=$(./lookupcontent $PEER1 $C5KEY)
 if [ "e" != "$C5VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C5VALUE'"
+    fail "${TEST}" "./C5 lookupcontent returned '$C5VALUE'"
 fi
 C6VALUE=$(./lookupcontent $PEER1 $C6KEY)
 if [ "f" != "$C6VALUE" ] ; then
-    fail "${TEST}" "./lookupcontent returned '$C6VALUE'"
+    fail "${TEST}" "./C6 lookupcontent returned '$C6VALUE'"
 fi
 
 ./removecontent $PEER1 $C1KEY

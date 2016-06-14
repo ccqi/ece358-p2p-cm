@@ -10,20 +10,20 @@ rm $TMPFILE
 C1KEY=$(./addcontent $PEER1 'hello world')
 C1VALUE=$(./lookupcontent $PEER1 $C1KEY)
 if [ "hello world" != "$C1VALUE" ] ; then
-    fail "${TEST}" "first ./lookupcontent $C1KEY returned '$C1VALUE'"
+    fail "${TEST}" "C1 ./lookupcontent $C1KEY returned '$C1VALUE'"
 fi
 
 C2KEY=$(./addcontent $PEER1 'applesauce and beer')
 C2VALUE=$(./lookupcontent $PEER1 $C2KEY)
 if [ "applesauce and beer" != "$C2VALUE" ] ; then
-    fail "${TEST}" "second ./lookupcontent $C2KEY returned '$C2VALUE'"
+    fail "${TEST}" "C2 ./lookupcontent $C2KEY returned '$C2VALUE'"
 fi
 
 ./removecontent $PEER1 $C2KEY
 
 C1VALUE=$(./lookupcontent $PEER1 $C1KEY)
 if [ "hello world" != "$C1VALUE" ] ; then
-    fail "${TEST}" "third ./lookupcontent $C1KEY returned '$C1VALUE'"
+    fail "${TEST}" "C1 (2nd) ./lookupcontent $C1KEY returned '$C1VALUE'"
 fi
 
 ./removecontent $PEER1 $C1KEY
