@@ -16,8 +16,8 @@ uint8_t insert_content(char *value) {
 
 void remove_content(uint8_t key, char *ip, char *port) {
     if (data.find(key) != data.end()) {
-      data.erase(key);
-      return;
+        data.erase(key);
+        return;
     }
 
     std::stringstream ss;
