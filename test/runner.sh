@@ -25,9 +25,6 @@ make -s clean ${EXECS[*]}
 
 
 echo
-
-. "${TEST_DIR}/test_binaries.sh"
-. "${TEST_DIR}/test_content_basic.sh"
-. "${TEST_DIR}/test_content_many.sh"
-. "${TEST_DIR}/test_peers_basic.sh"
-. "${TEST_DIR}/test_peers_many.sh"
+for file in "${TEST_DIR}/test_"*".sh"; do
+    . $file
+done
