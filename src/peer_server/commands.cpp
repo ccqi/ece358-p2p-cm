@@ -20,6 +20,10 @@ void addcontent(int8_t connectedsock) {
     char *val = strtok(NULL, ":");
 
     uint8_t key = insert_content(val);
+    if (key == 0) {
+        send_to_socket(connectedsock, (char *)"-");
+        return;
+    }
 
     char *ckey = new char[6];
     sprintf(ckey, "%d", key);
@@ -217,5 +221,5 @@ void respond(const char *command, int8_t connectedsock) {
         exit(0); // shut down gracefully
     }
 
-    // TODO: error handling
+    fprintf(stderr, "Received unknown command '%s'. Ignoring...\n", command);
 }

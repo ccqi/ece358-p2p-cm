@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../shared/socket.h"
 
@@ -20,9 +21,14 @@ int main(int argc, char *argv[]) {
 
     char buf[SOCKET_TRANSFER_LIMIT];
     receive_from_socket(sockfd, buf);
+
+    if (strcmp(buf, "-") == 0) {
+        fprintf(stderr, "Error: no space for new content\n");
+        destroy_socket(sockfd);
+        return 1;
+    }
+
     printf("%s\n", buf);
-
     destroy_socket(sockfd);
-
     return 0;
 }
