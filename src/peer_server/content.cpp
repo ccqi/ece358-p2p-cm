@@ -14,26 +14,15 @@ uint8_t insert_content(char *value) {
     return key;
 }
 
-void remove_content(uint8_t key) {
-    std::stringstream ss;
-    ss << "removekey:" << key << ":" << self.ip << ":" << self.port;
-    forward(ss.str().c_str());
-}
+void remove_content(uint8_t key, char *ip, char *port) {
+    if (data.find(key) != data.end()) {
+      data.erase(key);
+      return;
+    }
 
-void remove_key(uint8_t key, char *ip, char *port) {
-  if (data.find(key) != data.end()) {
-    data.erase(key);
-    return;
-  }
-
-  if (ip == self.ip && port == self.port) {
-    // throw error "Error: no such content"
-    return;
-  } else {
     std::stringstream ss;
-    ss << "removekey:" << key << ":" << ip << ":" << port;
-    forward(ss.str().c_str());
-  }
+    ss << "removecontent:" << key << ":" << ip << ":" << port;
+    forward(ss.str().c_str(), ip, port);
 }
 
 char *read_content(uint8_t key) {

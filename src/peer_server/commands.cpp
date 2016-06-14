@@ -56,7 +56,10 @@ void lookupcontent(int8_t connectedsock) {
 }
 
 void removecontent() {
-    remove_content(atoi(strtok(NULL, ":")));
+    uint8_t key = atoi(strtok(NULL, ":"));
+    char *ip = strtok(NULL, ":");
+    char *port = strtok(NULL, ":");
+    remove_content(key, ip, port);
 }
 
 void removepeer() {
@@ -97,14 +100,6 @@ void removenode() {
     remove_node(remove_ip, remove_port, lip, lport, rip, rport);
 }
 
-void removekey() {
-    uint8_t key = atoi(strtok(NULL, ":"));
-    char *ip = strtok(NULL, ":");
-    char *port = strtok(NULL, ":");
-
-    remove_key(key, ip, port);
-}
-
 /*
  * global command responder
  */
@@ -140,9 +135,6 @@ void respond(const char *command, int8_t connectedsock) {
         return;
     } else if (strcmp(command, "removenode") == 0) {
         removenode();
-        return;
-    } else if (strcmp(command, "removekey") == 0) {
-        removekey();
         return;
     }
 
