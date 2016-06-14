@@ -1,8 +1,6 @@
 TEST="test_content_basic: single add/lookup/remove"
 
-TMPFILE="${WORK_DIR}/temp.txt"
 ./addpeer > $TMPFILE; sleep 1
-
 PEER1=$(cat $TMPFILE)
 if [ "empty" == "${PEER1:-empty}" ] ; then
     fail "${TEST}" "./addpeer failed to print a port (got '${PEER1}'): see $TMPFILE"

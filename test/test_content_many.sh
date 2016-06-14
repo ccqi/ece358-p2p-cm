@@ -1,8 +1,6 @@
 TEST="test_content_many: multiple add/lookup/remove contents, random order"
 
-TMPFILE="${WORK_DIR}/temp.txt"
 ./addpeer > $TMPFILE; sleep 1
-
 PEER1=$(cat $TMPFILE)
 if [ "empty" == "${PEER1:-empty}" ] ; then
     fail "${TEST}" "./addpeer failed to print a port (got '${PEER1}'): see $TMPFILE"

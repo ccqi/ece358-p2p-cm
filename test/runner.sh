@@ -11,9 +11,12 @@ function ok {
 }
 
 export EXECS=(addpeer removepeer addcontent removecontent lookupcontent)
+
 export GIT_ROOT=$(git rev-parse --show-toplevel)
 export TEST_DIR="${GIT_ROOT}/test"
 export WORK_DIR="${TEST_DIR}/work"
+
+export TMPFILE="${WORK_DIR}/temp.txt"
 
 # create workdir
 mkdir -p "${WORK_DIR}"
