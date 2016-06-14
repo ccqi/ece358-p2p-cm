@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -u
 
 function fail {
     echo -e "\033[31mfail: \033[0m${1}"
@@ -26,5 +26,6 @@ make -s clean ${EXECS[*]}
 
 echo
 for file in "${TEST_DIR}/test_"*".sh"; do
+    pkill -f peer
     . $file
 done
