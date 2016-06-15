@@ -68,22 +68,6 @@ void connect_to_socket(int8_t *sockfd, char *ip, char *port) {
         exit(1);
     }
 
-    struct sockaddr_in client;
-    client.sin_family = AF_INET;
-    client.sin_addr.s_addr = htonl(INADDR_ANY);
-    client.sin_port = 0;
-    if (bind(*sockfd, (const struct sockaddr *)&client,
-             sizeof(struct sockaddr)) < 0) {
-        perror("could not bind to socket");
-        exit(1);
-    }
-
-    socklen_t alen = sizeof(struct sockaddr_in);
-    if (getsockname(*sockfd, (struct sockaddr *)&client, &alen) < 0) {
-        perror("could not get socket name");
-        exit(1);
-    }
-
     if (connect(*sockfd, (struct sockaddr *)&server,
                 sizeof(struct sockaddr_in)) < 0) {
         if (errno == ECONNREFUSED) {
