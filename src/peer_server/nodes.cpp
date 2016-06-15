@@ -50,7 +50,7 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
     std::stringstream ss;
     ss << "connectnewpeer:" << replace_ip << ":" << replace_port << ":" << ip
        << ":" << port;
-    forward(ss.str().c_str(), replace_ip, replace_port);
+    forward(ss.str().c_str(), ip, port);
 
     validate_content();
 }
