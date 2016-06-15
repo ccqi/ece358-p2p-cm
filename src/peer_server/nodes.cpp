@@ -24,7 +24,7 @@ void add_node(char *ip, char *port) {
 
 void clone_node(int peers, int content, char *lip, char *lport, char *rip,
                 char *rport) {
-    total_peers = ++peers;
+    total_peers = peers;
     total_content = content;
 
     left = addr_info(lip, lport);
@@ -34,8 +34,6 @@ void clone_node(int peers, int content, char *lip, char *lport, char *rip,
     ss << "connectnewpeer:" << left.ip << ":" << left.port << ":" << self.ip
        << ":" << self.port;
     forward(ss.str().c_str(), self.ip, self.port);
-
-    validate_content();
 }
 
 void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
@@ -50,7 +48,7 @@ void connect_node(char *replace_ip, char *replace_port, char *ip, char *port) {
     std::stringstream ss;
     ss << "connectnewpeer:" << replace_ip << ":" << replace_port << ":" << ip
        << ":" << port;
-    forward(ss.str().c_str(), ip, port);
+    forward(ss.str().c_str(), replace_ip, replace_port);
 
     validate_content();
 }
